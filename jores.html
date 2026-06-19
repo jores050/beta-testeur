@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lokasyon — Trouvez votre logement au Bénin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sand: #F5F0E8;
+  --sand-dark: #EDE6D6;
+  --ink: #1A1A18;
+  --ink-mid: #4A4A44;
+  --ink-light: #8A8A82;
+  --green: #1B6B4A;
+  --green-light: #E8F4EE;
+  --green-mid: #2D8A60;
+  --amber: #C4831A;
+  --amber-light: #FDF3E3;
+  --red: #C0392B;
+  --red-light: #FDECEA;
+  --white: #FFFFFF;
+  --border: rgba(26,26,24,0.1);
+  --border-mid: rgba(26,26,24,0.2);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 100px;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--sand);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── NAV ── */
+.nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--green);
+  cursor: pointer;
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--amber); }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-mid);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.nav-btn:hover { background: var(--sand); }
+.nav-btn.primary {
+  background: var(--green);
+  color: var(--white);
+  font-weight: 500;
+}
+.nav-btn.primary:hover { background: var(--green-mid); }
+.nav-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--sand);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.15s;
+}
+.nav-icon:hover { background: var(--sand-dark); }
+
+/* ── BOTTOM NAV (mobile feel) ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px 8px;
+  cursor: pointer;
+  gap: 3px;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+}
+.bnav-item svg { width: 22px; height: 22px; stroke: var(--ink-light); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.15s; }
+.bnav-item span { font-size: 10px; color: var(--ink-light); transition: color 0.15s; }
+.bnav-item.active svg { stroke: var(--green); }
+.bnav-item.active span { color: var(--green); font-weight: 500; }
+.notif-dot { position: relative; }
+.notif-dot::after { content: ''; position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 1.5px solid var(--white); }
+
+/* ── CONTENT WRAP ── */
+.content { flex: 1; overflow-y: auto; padding-bottom: 70px; }
+
+/* ── HERO SEARCH ── */
+.hero {
+  background: var(--white);
+  padding: 32px 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.hero-title em { color: var(--green); font-style: italic; }
+.hero-sub { font-size: 13px; color: var(--ink-light); margin-bottom: 18px; }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sand);
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-pill);
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+.search-bar:focus-within { border-color: var(--green); }
+.search-bar svg { width: 18px; height: 18px; stroke: var(--ink-light); fill: none; stroke-width: 2; flex-shrink: 0; }
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+}
+.search-bar input::placeholder { color: var(--ink-light); }
+
+.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.filters::-webkit-scrollbar { display: none; }
+.filter-pill {
+  flex-shrink: 0;
+  border: 1px solid var(--border-mid);
+  background: var(--white);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.filter-pill:hover { border-color: var(--green); color: var(--green); }
+.filter-pill.active { background: var(--green); border-color: var(--green); color: var(--white); }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 20px 20px 12px;
+}
+.section-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+.section-link { font-size: 13px; color: var(--green); cursor: pointer; }
+
+/* ── LISTING CARDS ── */
+.listings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px;
+}
+.listing-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.listing-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.listing-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.listing-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  position: relative;
+}
+.listing-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  line-height: 1.4;
+}
+.badge-green { background: var(--green); color: var(--white); }
+.badge-amber { background: var(--amber); color: var(--white); }
+.badge-verified { background: rgba(255,255,255,0.92); color: var(--green); border: 1px solid var(--green); }
+.fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.1s;
+}
+.fav-btn:hover { transform: scale(1.15); }
+.listing-body { padding: 10px 12px 12px; }
+.listing-price { font-size: 15px; font-weight: 600; color: var(--ink); }
+.listing-price span { font-size: 11px; font-weight: 400; color: var(--ink-light); }
+.listing-title { font-size: 12px; color: var(--ink-mid); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.listing-loc { font-size: 11px; color: var(--ink-light); margin-top: 3px; display: flex; align-items: center; gap: 3px; }
+.listing-loc svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+/* ── FEATURED CARD (wide) ── */
+.featured-scroll { display: flex; gap: 12px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+.featured-scroll::-webkit-scrollbar { display: none; }
+.featured-card {
+  flex-shrink: 0;
+  width: 260px;
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s;
+}
+.featured-card:hover { transform: translateY(-2px); }
+.featured-img-placeholder {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  position: relative;
+}
+.featured-body { padding: 12px 14px 14px; }
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  display: flex;
+  gap: 0;
+  background: var(--green);
+  margin: 20px 16px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stat-item {
+  flex: 1;
+  padding: 14px 10px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num { font-size: 20px; font-weight: 600; color: var(--white); font-family: var(--font-display); }
+.stat-lbl { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+/* ── DETAIL SCREEN ── */
+.detail-header {
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+.back-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--sand);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.detail-img-wrap {
+  position: relative;
+  background: var(--sand-dark);
+  height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 60px;
+  overflow: hidden;
+}
+.img-counter {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+.detail-body { padding: 16px 16px 0; }
+.detail-price { font-size: 22px; font-weight: 600; color: var(--ink); font-family: var(--font-display); }
+.detail-price span { font-size: 13px; font-weight: 400; color: var(--ink-light); font-family: var(--font-body); }
+.detail-title { font-size: 16px; font-weight: 500; color: var(--ink); margin-top: 4px; }
+.detail-loc { font-size: 13px; color: var(--ink-light); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+.detail-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.badge-outline { border: 1px solid var(--border-mid); background: var(--white); color: var(--ink-mid); font-size: 11px; padding: 4px 10px; border-radius: var(--radius-pill); }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.detail-section-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+.amenities { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.amenity { font-size: 13px; color: var(--ink-mid); display: flex; align-items: center; gap: 6px; }
+.amenity::before { content: '✓'; color: var(--green); font-weight: 600; font-size: 12px; }
+.owner-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--sand);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.owner-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--green);
+  flex-shrink: 0;
+}
+.owner-name { font-size: 14px; font-weight: 500; }
+.owner-meta { font-size: 12px; color: var(--ink-light); margin-top: 2px; }
+.stars { color: var(--amber); font-size: 12px; }
+.detail-cta {
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--green); color: var(--white); flex: 1; }
+.btn-primary:hover { background: var(--green-mid); }
+.btn-secondary { background: var(--sand); color: var(--ink); border: 1px solid var(--border-mid); }
+.btn-secondary:hover { background: var(--sand-dark); }
+.btn-outline-green { background: var(--white); color: var(--green); border: 1.5px solid var(--green); flex: 1; }
+.btn-outline-green:hover { background: var(--green-light); }
+
+/* ── MESSAGES SCREEN ── */
+.conversations-list { display: flex; flex-direction: column; }
+.convo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  background: var(--white);
+}
+.convo-item:hover { background: var(--sand); }
+.convo-item.unread { background: var(--white); }
+.convo-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+  flex-shrink: 0;
+  position: relative;
+}
+.online-dot {
+  position: absolute;
+  bottom: 1px; right: 1px;
+  width: 10px; height: 10px;
+  background: #22C55E;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+}
+.convo-body { flex: 1; min-width: 0; }
+.convo-name { font-size: 14px; font-weight: 500; color: var(--ink); display: flex; justify-content: space-between; }
+.convo-name span { font-size: 11px; font-weight: 400; color: var(--ink-light); }
+.convo-preview { font-size: 12px; color: var(--ink-light); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.convo-preview.unread-txt { color: var(--ink); font-weight: 500; }
+.convo-logement { font-size: 11px; color: var(--green); margin-top: 2px; }
+.unread-badge {
+  width: 18px; height: 18px;
+  background: var(--green);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--white);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ── CHAT SCREEN ── */
+.chat-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.chat-context-bar {
+  background: var(--sand);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.ctx-thumb {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ctx-info { flex: 1; min-width: 0; }
+.ctx-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.ctx-price { font-size: 12px; color: var(--green); }
+.ctx-ref { font-size: 11px; color: var(--ink-light); }
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 80px;
+}
+.msg-date-sep { text-align: center; font-size: 11px; color: var(--ink-light); padding: 4px 0; }
+.msg-bubble-wrap { display: flex; flex-direction: column; }
+.msg-bubble-wrap.me { align-items: flex-end; }
+.msg-bubble-wrap.them { align-items: flex-start; }
+.msg-bubble {
+  max-width: 75%;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.msg-bubble.me { background: var(--green); color: var(--white); border-radius: 16px 16px 4px 16px; }
+.msg-bubble.them { background: var(--white); color: var(--ink); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; }
+.msg-time { font-size: 10px; color: var(--ink-light); margin-top: 3px; }
+.msg-time.me-time { color: rgba(255,255,255,0.6); }
+.rdv-card {
+  background: var(--white);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  max-width: 80%;
+  align-self: flex-start;
+}
+.rdv-label { font-size: 10px; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.rdv-label svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+.rdv-date-display { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+.rdv-card-actions { display: flex; gap: 8px; }
+.rdv-accept { flex: 1; padding: 7px; background: var(--green); color: var(--white); border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font-body); }
+.rdv-decline { flex: 1; padding: 7px; background: var(--white); color: var(--ink-mid); border: 1px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; font-family: var(--font-body); }
+.secure-notice {
+  background: var(--green-light);
+  border: 1px solid rgba(27,107,74,0.2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--green);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 16px 10px;
+  flex-shrink: 0;
+}
+.chat-input-wrap {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.chat-input-actions { display: flex; gap: 6px; }
+.chat-action-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--sand);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  color: var(--ink-mid);
+  transition: background 0.1s;
+}
+.chat-action-btn:hover { background: var(--sand-dark); }
+.chat-action-btn.rdv-trigger { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+.chat-text-input {
+  flex: 1;
+  min-height: 36px;
+  max-height: 100px;
+  border: 1px solid var(--border-mid);
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--sand);
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.4;
+}
+.chat-text-input:focus { border-color: var(--green); background: var(--white); }
+.chat-send-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--green);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 16px;
+  color: var(--white);
+  transition: background 0.15s;
+}
+.chat-send-btn:hover { background: var(--green-mid); }
+
+/* ── RDV MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-handle { width: 36px; height: 4px; background: var(--border-mid); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.cal-month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-month-label { font-size: 14px; font-weight: 500; }
+.cal-nav-btn { background: var(--sand); border: 1px solid var(--border); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 16px; }
+.cal-header { font-size: 11px; color: var(--ink-light); padding: 4px 0; }
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: all 0.1s;
+}
+.cal-cell:hover:not(.past):not(.empty) { background: var(--green-light); color: var(--green); }
+.cal-cell.today { font-weight: 600; color: var(--ink); }
+.cal-cell.selected { background: var(--green); color: var(--white); }
+.cal-cell.past { color: var(--ink-light); opacity: 0.4; pointer-events: none; }
+.cal-cell.empty { pointer-events: none; }
+.slots-title { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
+.slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.slot-btn {
+  padding: 8px 4px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-size: 12px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.1s;
+  font-family: var(--font-body);
+}
+.slot-btn:hover { border-color: var(--green); color: var(--green); }
+.slot-btn.selected { background: var(--green); border-color: var(--green); color: var(--white); font-weight: 500; }
+.slot-btn.taken { opacity: 0.35; pointer-events: none; text-decoration: line-through; }
+
+/* ── PUBLISH SCREEN ── */
+.publish-form { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--ink); text-transform: uppercase; letter-spacing: 0.05em; }
+.form-input {
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus { border-color: var(--green); }
+.form-select {
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.photo-upload {
+  border: 2px dashed var(--border-mid);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  background: var(--sand);
+}
+.photo-upload:hover { border-color: var(--green); }
+.photo-upload-icon { font-size: 28px; margin-bottom: 8px; }
+.photo-upload-text { font-size: 13px; color: var(--ink-light); }
+.photo-upload-text strong { color: var(--green); }
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.type-option {
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.type-option:hover { border-color: var(--green); }
+.type-option.selected { border-color: var(--green); background: var(--green-light); }
+.type-option-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+.type-option-label { font-size: 11px; color: var(--ink-mid); }
+.type-option.selected .type-option-label { color: var(--green); font-weight: 500; }
+.boost-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--amber-light);
+  border: 1px solid rgba(196,131,26,0.3);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+}
+.boost-toggle-text { flex: 1; }
+.boost-toggle-title { font-size: 14px; font-weight: 500; color: var(--amber); }
+.boost-toggle-sub { font-size: 12px; color: var(--ink-light); margin-top: 2px; }
+.toggle-switch {
+  width: 42px; height: 24px;
+  background: var(--border-mid);
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--amber); }
+.toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch.on .toggle-knob { transform: translateX(18px); }
+
+/* ── PROFILE / DASHBOARD ── */
+.profile-header {
+  background: var(--green);
+  padding: 32px 16px 24px;
+  color: var(--white);
+}
+.profile-avatar-big {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+.profile-name { font-size: 20px; font-weight: 600; font-family: var(--font-display); }
+.profile-role { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+.profile-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin-top: 16px; }
+.pstat { text-align: center; padding: 8px 0; border-right: 1px solid rgba(255,255,255,0.2); }
+.pstat:last-child { border-right: none; }
+.pstat-num { font-size: 18px; font-weight: 600; }
+.pstat-lbl { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+.menu-list { background: var(--white); }
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.menu-item:hover { background: var(--sand); }
+.menu-item-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.menu-item-icon.green { background: var(--green-light); }
+.menu-item-icon.amber { background: var(--amber-light); }
+.menu-item-icon.sand { background: var(--sand); }
+.menu-item-body { flex: 1; }
+.menu-item-title { font-size: 14px; font-weight: 500; }
+.menu-item-sub { font-size: 12px; color: var(--ink-light); margin-top: 1px; }
+.menu-item-arrow { color: var(--ink-light); font-size: 18px; }
+.menu-section-header { padding: 16px 16px 8px; font-size: 11px; font-weight: 600; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.06em; background: var(--sand); }
+
+/* ── LOYER DASHBOARD ── */
+.loyer-cards { display: flex; flex-direction: column; gap: 10px; padding: 0 16px; }
+.loyer-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.loyer-card-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+.loyer-card-title { font-size: 14px; font-weight: 500; }
+.loyer-card-ref { font-size: 11px; color: var(--ink-light); }
+.loyer-tenant { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.mini-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--green); flex-shrink: 0; }
+.loyer-months { display: flex; gap: 4px; padding: 12px 14px; overflow-x: auto; scrollbar-width: none; }
+.loyer-months::-webkit-scrollbar { display: none; }
+.month-pill {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+.month-pill.paid { background: var(--green-light); color: var(--green); border-color: transparent; }
+.month-pill.current { background: var(--amber-light); color: var(--amber); border-color: transparent; }
+.month-pill.pending { background: var(--red-light); color: var(--red); border-color: transparent; }
+.month-pill.future { background: var(--sand); color: var(--ink-light); }
+.loyer-actions { display: flex; gap: 8px; padding: 10px 14px; }
+.loyer-action-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border-mid);
+  background: var(--white);
+  font-family: var(--font-body);
+  color: var(--ink-mid);
+  transition: all 0.15s;
+}
+.loyer-action-btn.primary { background: var(--green); color: var(--white); border-color: var(--green); }
+.loyer-action-btn:hover { background: var(--sand); }
+.loyer-action-btn.primary:hover { background: var(--green-mid); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.25s;
+  z-index: 300;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* UTILS */
+.mt8 { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.mt16 { margin-top: 16px; }
+.pb20 { padding-bottom: 20px; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--ink-light); }
+.text-green { color: var(--green); }
+.fw500 { font-weight: 500; }
+.inline-flex { display: flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- RDV MODAL -->
+<div class="modal-overlay" id="rdvModal" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Choisir une date de visite</div>
+    <div class="cal-month-nav">
+      <button class="cal-nav-btn">&#8249;</button>
+      <span class="cal-month-label">Juin 2026</span>
+      <button class="cal-nav-btn">&#8250;</button>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">M</div>
+      <div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div><div class="cal-header">D</div>
+      <div class="cal-cell empty"></div><div class="cal-cell past">1</div><div class="cal-cell past">2</div>
+      <div class="cal-cell past">3</div><div class="cal-cell past">4</div><div class="cal-cell past">5</div><div class="cal-cell past">6</div>
+      <div class="cal-cell past">7</div><div class="cal-cell past">8</div><div class="cal-cell past">9</div>
+      <div class="cal-cell past">10</div><div class="cal-cell past">11</div><div class="cal-cell past">12</div><div class="cal-cell past">13</div>
+      <div class="cal-cell past">14</div><div class="cal-cell past">15</div><div class="cal-cell past">16</div>
+      <div class="cal-cell past">17</div><div class="cal-cell past">18</div><div class="cal-cell past">19</div><div class="cal-cell today" onclick="selectCal(this)">20</div>
+      <div class="cal-cell" onclick="selectCal(this)">21</div><div class="cal-cell" onclick="selectCal(this)">22</div><div class="cal-cell" onclick="selectCal(this)">23</div>
+      <div class="cal-cell" onclick="selectCal(this)">24</div><div class="cal-cell" onclick="selectCal(this)">25</div><div class="cal-cell" onclick="selectCal(this)">26</div><div class="cal-cell" onclick="selectCal(this)">27</div>
+      <div class="cal-cell" onclick="selectCal(this)">28</div><div class="cal-cell" onclick="selectCal(this)">29</div><div class="cal-cell" onclick="selectCal(this)">30</div>
+    </div>
+    <div class="slots-title">Créneaux disponibles — Sam. 28 juin</div>
+    <div class="slots-grid">
+      <button class="slot-btn taken">08h00</button>
+      <button class="slot-btn" onclick="selectSlot(this)">09h00</button>
+      <button class="slot-btn selected" onclick="selectSlot(this)">10h00</button>
+      <button class="slot-btn" onclick="selectSlot(this)">11h00</button>
+      <button class="slot-btn taken">13h00</button>
+      <button class="slot-btn" onclick="selectSlot(this)">14h00</button>
+      <button class="slot-btn" onclick="selectSlot(this)">15h00</button>
+      <button class="slot-btn" onclick="selectSlot(this)">16h00</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="confirmRdv()">Envoyer la demande de visite</button>
+    <div style="height:8px;"></div>
+    <button class="btn btn-secondary" style="width:100%" onclick="document.getElementById('rdvModal').classList.remove('open')">Annuler</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1 — ACCUEIL / MARKETPLACE
+════════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <nav class="nav">
+    <div class="nav-logo">Loka<span>syn</span></div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="goScreen('screen-publish')">Publier</button>
+      <button class="nav-btn primary" onclick="goScreen('screen-chat')">Messages</button>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="hero">
+      <div class="hero-title">Trouvez votre<br><em>logement idéal</em><br>au Bénin</div>
+      <div class="hero-sub">3 148 logements vérifiés · Cotonou · Calavi · Porto-Novo</div>
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Quartier, ville, type de logement…" />
+      </div>
+      <div class="filters">
+        <button class="filter-pill active">Tous</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Studios</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Chambres</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">F2 / F3</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Meublé</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Calavi UAC</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Disponible</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Vérifié ✓</button>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-num">3 148</div><div class="stat-lbl">Logements</div></div>
+      <div class="stat-item"><div class="stat-num">842</div><div class="stat-lbl">Bailleurs actifs</div></div>
+      <div class="stat-item"><div class="stat-num">1 204</div><div class="stat-lbl">Mis en relation</div></div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">À la une</div>
+      <div class="section-link">Voir tout</div>
+    </div>
+    <div class="featured-scroll">
+      <div class="featured-card" onclick="goScreen('screen-detail')">
+        <div class="featured-img-placeholder" style="background:linear-gradient(135deg,#E8F4EE,#c8e6d8);">
+          🏠
+          <div class="listing-badges">
+            <span class="badge badge-amber">À la une</span>
+            <span class="badge badge-verified">✓ Vérifié</span>
+          </div>
+        </div>
+        <div class="featured-body">
+          <div class="listing-price">45 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Appartement F2 meublé</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Fidjrossè, Cotonou
+          </div>
+        </div>
+      </div>
+      <div class="featured-card" onclick="goScreen('screen-detail')">
+        <div class="featured-img-placeholder" style="background:linear-gradient(135deg,#FDF3E3,#f5ddb0);">
+          🏘️
+          <div class="listing-badges"><span class="badge badge-green">Étudiant OK</span></div>
+        </div>
+        <div class="featured-body">
+          <div class="listing-price">22 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Chambre salon meublée</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Agla, près UAC
+          </div>
+        </div>
+      </div>
+      <div class="featured-card" onclick="goScreen('screen-detail')">
+        <div class="featured-img-placeholder" style="background:linear-gradient(135deg,#FDECEA,#f8c5c0);">
+          🏢
+          <div class="listing-badges"><span class="badge badge-verified">✓ Vérifié</span></div>
+        </div>
+        <div class="featured-body">
+          <div class="listing-price">80 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Appartement F3 standing</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cadjehoun, Cotonou
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header mt16">
+      <div class="section-title">Logements récents</div>
+      <div class="section-link">Carte</div>
+    </div>
+    <div class="listings-grid">
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#E8F4EE,#b8ddc8);">
+          🛏️
+          <div class="listing-badges"><span class="badge badge-green">Dispo</span></div>
+          <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button>
+        </div>
+        <div class="listing-body">
+          <div class="listing-price">18 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Chambre autonome</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Godomey, Calavi
+          </div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#FDF3E3,#f0cc88);">
+          🏠
+          <div class="listing-badges"><span class="badge badge-verified">✓</span></div>
+          <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button>
+        </div>
+        <div class="listing-body">
+          <div class="listing-price">35 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Studio meublé</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Akpakpa, Cotonou
+          </div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#EEEDFE,#c8c4f0);">
+          🏘️
+          <div class="listing-badges"><span class="badge badge-green">Étudiant OK</span></div>
+          <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button>
+        </div>
+        <div class="listing-body">
+          <div class="listing-price">12 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">Chambre étudiant</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Calavi, près UAC
+          </div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#FBEAF0,#f4b8cc);">
+          🏢
+          <div class="listing-badges"><span class="badge badge-amber">Boost</span></div>
+          <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button>
+        </div>
+        <div class="listing-body">
+          <div class="listing-price">55 000 <span>FCFA/mois</span></div>
+          <div class="listing-title">F2 non meublé</div>
+          <div class="listing-loc">
+            <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Sainte Rita, Cotonou
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pb20"></div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-item active" onclick="goScreen('screen-home')">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-search')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Recherche</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-publish')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Publier</span>
+    </button>
+    <button class="bnav-item notif-dot" onclick="goScreen('screen-messages')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 — DÉTAIL LOGEMENT
+════════════════════════════════════════ -->
+<div class="screen" id="screen-detail">
+  <div class="detail-header">
+    <button class="back-btn" onclick="goScreen('screen-home')">&#8249;</button>
+    <div style="flex:1">
+      <div class="fw500 text-sm">Studio meublé · Godomey</div>
+      <div class="text-xs text-muted">Réf. LOG-0042</div>
+    </div>
+    <button class="fav-btn" style="position:static;width:36px;height:36px;background:var(--sand);border:1px solid var(--border);" onclick="toggleFav(this)">♡</button>
+  </div>
+  <div class="content">
+    <div class="detail-img-wrap">
+      🏠
+      <div class="listing-badges">
+        <span class="badge badge-green">Disponible</span>
+        <span class="badge badge-verified">✓ Vérifié</span>
+      </div>
+      <div class="img-counter">1 / 6</div>
+    </div>
+    <div class="detail-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:4px;">
+        <div>
+          <div class="detail-price">35 000 <span>FCFA / mois</span></div>
+          <div class="detail-title">Studio meublé avec cuisine</div>
+          <div class="detail-loc">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Godomey Togoudo, Abomey-Calavi
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:12px;">
+          <div style="font-size:11px;color:var(--ink-light);">Caution</div>
+          <div style="font-size:15px;font-weight:600;color:var(--amber);">2 mois</div>
+          <div style="font-size:10px;color:var(--ink-light);">sécurisée</div>
+        </div>
+      </div>
+      <div class="detail-badges">
+        <span class="badge-outline">🛏 1 chambre</span>
+        <span class="badge-outline">📐 28 m²</span>
+        <span class="badge-outline">🪑 Meublé</span>
+        <span class="badge-outline">💧 Eau incluse</span>
+        <span class="badge-outline">🔌 Compteur solo</span>
+      </div>
+      <div class="divider"></div>
+      <div class="detail-section-title">Équipements</div>
+      <div class="amenities">
+        <div class="amenity">Climatisation</div>
+        <div class="amenity">Cuisine équipée</div>
+        <div class="amenity">WC privatif</div>
+        <div class="amenity">Douche chaude</div>
+        <div class="amenity">Gardien 24h</div>
+        <div class="amenity">Parking moto</div>
+      </div>
+      <div class="divider"></div>
+      <div class="detail-section-title">Type de bail</div>
+      <div class="text-sm text-muted" style="line-height:1.6;">Bail mensuel renouvelable. Préavis 1 mois. Paiement mensuel via plateforme sécurisée (MTN MoMo / Moov Money).</div>
+      <div class="divider"></div>
+      <div class="detail-section-title">Bailleur</div>
+      <div class="owner-card">
+        <div class="owner-avatar">AK</div>
+        <div style="flex:1">
+          <div class="owner-name">Adrien Kossou</div>
+          <div class="owner-meta"><span class="stars">★★★★</span>★ 4,2 · 12 logements gérés</div>
+          <div class="owner-meta mt8">Temps de réponse moyen : <strong>2h</strong></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="detail-section-title">Localisation</div>
+      <div style="background:var(--sand-dark);border-radius:var(--radius);height:120px;display:flex;align-items:center;justify-content:center;color:var(--ink-light);font-size:13px;border:1px solid var(--border);">
+        📍 Carte — Godomey Togoudo
+      </div>
+      <div class="pb20"></div>
+    </div>
+  </div>
+  <div class="detail-cta">
+    <button class="btn btn-outline-green" onclick="document.getElementById('rdvModal').classList.add('open')">
+      📅 Visiter
+    </button>
+    <button class="btn btn-primary" onclick="goScreen('screen-chat')">
+      💬 Contacter le bailleur
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3 — LISTE MESSAGES
+════════════════════════════════════════ -->
+<div class="screen" id="screen-messages">
+  <nav class="nav">
+    <div class="nav-logo">Loka<span>syn</span></div>
+    <div class="nav-links">
+      <div class="nav-icon">✏️</div>
+    </div>
+  </nav>
+  <div class="content">
+    <div style="padding:16px 16px 8px;font-size:18px;font-weight:600;font-family:var(--font-display);">Messages</div>
+    <div class="conversations-list">
+      <div class="convo-item unread" onclick="goScreen('screen-chat')">
+        <div class="convo-avatar" style="background:#E8F4EE;">AK<div class="online-dot"></div></div>
+        <div class="convo-body">
+          <div class="convo-name">Adrien Kossou <span>Il y a 3 min</span></div>
+          <div class="convo-logement">🏠 Studio meublé · Godomey · LOG-0042</div>
+          <div class="convo-preview unread-txt">Oui disponible à partir du 1er juillet</div>
+        </div>
+        <div class="unread-badge">2</div>
+      </div>
+      <div class="convo-item" onclick="goScreen('screen-chat')">
+        <div class="convo-avatar" style="background:#FDF3E3;">BM</div>
+        <div class="convo-body">
+          <div class="convo-name">Bénédicte Missihoun <span>Hier</span></div>
+          <div class="convo-logement">🏘️ Chambre salon · Akpakpa · LOG-0118</div>
+          <div class="convo-preview">La visite est confirmée pour samedi 10h</div>
+        </div>
+      </div>
+      <div class="convo-item" onclick="goScreen('screen-chat')">
+        <div class="convo-avatar" style="background:#EEEDFE;">FK</div>
+        <div class="convo-body">
+          <div class="convo-name">Florent Kiki <span>Il y a 3 j</span></div>
+          <div class="convo-logement">🏢 F2 non meublé · Sainte Rita · LOG-0287</div>
+          <div class="convo-preview">Merci pour votre intérêt, le logement est…</div>
+        </div>
+      </div>
+      <div style="padding:20px 16px;text-align:center;">
+        <div style="font-size:13px;color:var(--ink-light);">Vos échanges restent sécurisés sur la plateforme.<br>Les coordonnées sont partagées après signature du bail.</div>
+      </div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-item" onclick="goScreen('screen-home')">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-search')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Recherche</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-publish')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Publier</span>
+    </button>
+    <button class="bnav-item active notif-dot">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 4 — CHAT
+════════════════════════════════════════ -->
+<div class="screen" id="screen-chat" style="position:relative;">
+  <div class="chat-header">
+    <button class="back-btn" onclick="goScreen('screen-messages')">&#8249;</button>
+    <div class="convo-avatar" style="width:36px;height:36px;font-size:12px;background:#E8F4EE;">AK<div class="online-dot"></div></div>
+    <div style="flex:1">
+      <div class="fw500 text-sm">Adrien Kossou</div>
+      <div class="text-xs" style="color:#22C55E;">En ligne</div>
+    </div>
+    <button class="nav-icon" style="font-size:14px;" onclick="goScreen('screen-detail')">🏠</button>
+  </div>
+  <div class="chat-context-bar" onclick="goScreen('screen-detail')">
+    <div class="ctx-thumb">🏠</div>
+    <div class="ctx-info">
+      <div class="ctx-name">Studio meublé · Godomey</div>
+      <div class="ctx-price">35 000 FCFA / mois</div>
+    </div>
+    <div class="ctx-ref">LOG-0042 ›</div>
+  </div>
+  <div class="content" style="background:var(--sand);">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg-date-sep">Aujourd'hui · 19 juin 2026</div>
+      <div class="msg-bubble-wrap them">
+        <div class="msg-bubble them">Bonjour, votre studio est-il toujours disponible ?</div>
+        <div class="msg-time">09h14</div>
+      </div>
+      <div class="msg-bubble-wrap me">
+        <div class="msg-bubble me">Bonjour ! Oui, disponible à partir du 1er juillet.</div>
+        <div class="msg-time me-time">09h21 ✓✓</div>
+      </div>
+      <div class="msg-bubble-wrap them">
+        <div class="msg-bubble them">La caution c'est combien de mois ?</div>
+        <div class="msg-time">09h23</div>
+      </div>
+      <div class="msg-bubble-wrap me">
+        <div class="msg-bubble me">2 mois de caution, sécurisés via la plateforme. Vous récupérez si tout va bien à la fin du bail.</div>
+        <div class="msg-time me-time">09h25 ✓✓</div>
+      </div>
+      <div class="msg-bubble-wrap them">
+        <div class="msg-bubble them">Est-ce que l'eau et l'électricité sont incluses ?</div>
+        <div class="msg-time">09h31</div>
+      </div>
+      <div class="msg-bubble-wrap me">
+        <div class="msg-bubble me">L'eau est incluse, compteur électrique individuel à votre charge.</div>
+        <div class="msg-time me-time">09h33 ✓✓</div>
+      </div>
+      <div class="rdv-card">
+        <div class="rdv-label">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Demande de visite
+        </div>
+        <div class="rdv-date-display">Samedi 28 juin · 10h00</div>
+        <div class="rdv-card-actions">
+          <button class="rdv-accept" onclick="showToast('Visite confirmée — Sam. 28 juin 10h00')">✓ Confirmer</button>
+          <button class="rdv-decline" onclick="document.getElementById('rdvModal').classList.add('open')">Autre créneau</button>
+        </div>
+      </div>
+    </div>
+    <div class="secure-notice">
+      🔒 <span>Les numéros de téléphone sont masqués jusqu'à la signature du bail sur la plateforme.</span>
+    </div>
+    <div class="chat-input-wrap">
+      <button class="chat-action-btn rdv-trigger" onclick="document.getElementById('rdvModal').classList.add('open')" title="Demander un RDV">📅</button>
+      <textarea class="chat-text-input" id="chatInput" placeholder="Votre message…" rows="1" onkeydown="handleChatKey(event)"></textarea>
+      <button class="chat-send-btn" onclick="sendMessage()">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 5 — PUBLIER UNE ANNONCE
+════════════════════════════════════════ -->
+<div class="screen" id="screen-publish">
+  <div class="detail-header">
+    <button class="back-btn" onclick="goScreen('screen-home')">&#8249;</button>
+    <div style="flex:1;font-size:16px;font-weight:600;font-family:var(--font-display);">Publier un logement</div>
+  </div>
+  <div class="content">
+    <div class="publish-form">
+
+      <div class="form-group">
+        <div class="form-label">Type de logement</div>
+        <div class="type-grid">
+          <div class="type-option selected" onclick="selectType(this)">
+            <span class="type-option-icon">🛏️</span>
+            <div class="type-option-label">Chambre</div>
+          </div>
+          <div class="type-option" onclick="selectType(this)">
+            <span class="type-option-icon">🏠</span>
+            <div class="type-option-label">Studio</div>
+          </div>
+          <div class="type-option" onclick="selectType(this)">
+            <span class="type-option-icon">🏘️</span>
+            <div class="type-option-label">F2</div>
+          </div>
+          <div class="type-option" onclick="selectType(this)">
+            <span class="type-option-icon">🏢</span>
+            <div class="type-option-label">F3+</div>
+          </div>
+          <div class="type-option" onclick="selectType(this)">
+            <span class="type-option-icon">🏗️</span>
+            <div class="type-option-label">Villa</div>
+          </div>
+          <div class="type-option" onclick="selectType(this)">
+            <span class="type-option-icon">🏬</span>
+            <div class="type-option-label">Local</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Titre de l'annonce</div>
+        <input class="form-input" type="text" placeholder="Ex : Studio meublé avec cuisine, Godomey" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Loyer mensuel (FCFA)</div>
+          <input class="form-input" type="number" placeholder="35 000" />
+        </div>
+        <div class="form-group">
+          <div class="form-label">Caution (mois)</div>
+          <select class="form-select">
+            <option>1 mois</option>
+            <option selected>2 mois</option>
+            <option>3 mois</option>
+            <option>6 mois</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Localisation</div>
+        <input class="form-input" type="text" placeholder="Quartier, arrondissement, ville…" />
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Type de bail</div>
+        <select class="form-select">
+          <option>Mensuel renouvelable</option>
+          <option>Annuel</option>
+          <option>Étudiant (9 mois)</option>
+          <option>Court terme (1-3 mois)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Meublé</div>
+        <select class="form-select">
+          <option>Oui, entièrement meublé</option>
+          <option>Semi-meublé</option>
+          <option>Non meublé</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Photos</div>
+        <div class="photo-upload">
+          <div class="photo-upload-icon">📷</div>
+          <div class="photo-upload-text"><strong>Ajouter des photos</strong><br>Minimum 3 requis · JPG, PNG · Max 10 Mo</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Description</div>
+        <textarea class="form-input" rows="4" placeholder="Décrivez le logement : équipements, environnement, accès transports, conditions particulières…" style="resize:vertical;line-height:1.6;"></textarea>
+      </div>
+
+      <div class="boost-toggle" onclick="toggleBoost(this)">
+        <div style="font-size:22px;">⚡</div>
+        <div class="boost-toggle-text">
+          <div class="boost-toggle-title">Activer le Boost Semaine</div>
+          <div class="boost-toggle-sub">2 000 FCFA · Top 3 des résultats pendant 7 jours</div>
+        </div>
+        <div class="toggle-switch" id="boostSwitch">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;padding:14px;" onclick="showToast('Annonce soumise pour modération — délai 24h')">
+        Soumettre l'annonce
+      </button>
+      <div style="text-align:center;font-size:12px;color:var(--ink-light);padding-bottom:8px;">Votre annonce sera vérifiée par notre équipe sous 24h avant publication.</div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-item" onclick="goScreen('screen-home')">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-search')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Recherche</span>
+    </button>
+    <button class="bnav-item active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Publier</span>
+    </button>
+    <button class="bnav-item notif-dot" onclick="goScreen('screen-messages')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 6 — PROFIL / DASHBOARD BAILLEUR
+════════════════════════════════════════ -->
+<div class="screen" id="screen-profile">
+  <div class="content">
+    <div class="profile-header">
+      <div class="profile-avatar-big">AK</div>
+      <div class="profile-name">Adrien Kossou</div>
+      <div class="profile-role">Bailleur · Cotonou · Membre depuis jan. 2026</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-num">4</div><div class="pstat-lbl">Logements</div></div>
+        <div class="pstat"><div class="pstat-num">3</div><div class="pstat-lbl">Loués</div></div>
+        <div class="pstat"><div class="pstat-num">4,2★</div><div class="pstat-lbl">Note</div></div>
+      </div>
+    </div>
+
+    <div class="menu-section-header">Gestion locative</div>
+    <div class="menu-list">
+      <div class="menu-item" onclick="goScreen('screen-loyers')">
+        <div class="menu-item-icon green">💰</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Suivi des loyers</div>
+          <div class="menu-item-sub">1 paiement en retard · Juin 2026</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="showToast('Mes annonces — bientôt disponible')">
+        <div class="menu-item-icon green">🏠</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Mes annonces</div>
+          <div class="menu-item-sub">4 logements · 1 disponible</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="showToast('Contrats générés par IA — bientôt disponible')">
+        <div class="menu-item-icon green">📄</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Contrats & baux</div>
+          <div class="menu-item-sub">3 baux actifs · Génération IA</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="menu-section-header">Compte</div>
+    <div class="menu-list">
+      <div class="menu-item" onclick="showToast('Statistiques — bientôt disponible')">
+        <div class="menu-item-icon amber">📊</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Statistiques</div>
+          <div class="menu-item-sub">Vues, contacts, conversions</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="showToast('Boost & visibilité — bientôt disponible')">
+        <div class="menu-item-icon amber">⚡</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Boost & visibilité</div>
+          <div class="menu-item-sub">Pack Rentrée UAC disponible</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="showToast('Paramètres — bientôt disponible')">
+        <div class="menu-item-icon sand">⚙️</div>
+        <div class="menu-item-body">
+          <div class="menu-item-title">Paramètres</div>
+          <div class="menu-item-sub">Notifications, paiements</div>
+        </div>
+        <div class="menu-item-arrow">›</div>
+      </div>
+    </div>
+    <div class="pb20"></div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-item" onclick="goScreen('screen-home')">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-search')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Recherche</span>
+    </button>
+    <button class="bnav-item" onclick="goScreen('screen-publish')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Publier</span>
+    </button>
+    <button class="bnav-item notif-dot" onclick="goScreen('screen-messages')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+    </button>
+    <button class="bnav-item active">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 7 — SUIVI LOYERS
+════════════════════════════════════════ -->
+<div class="screen" id="screen-loyers">
+  <div class="detail-header">
+    <button class="back-btn" onclick="goScreen('screen-profile')">&#8249;</button>
+    <div style="flex:1;font-size:16px;font-weight:600;font-family:var(--font-display);">Suivi des loyers</div>
+    <button class="nav-icon" style="font-size:13px;" onclick="showToast('Export PDF généré')">PDF</button>
+  </div>
+  <div class="content">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px;">
+      <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:12px;text-align:center;">
+        <div style="font-size:18px;font-weight:600;color:var(--green);">105 000</div>
+        <div style="font-size:10px;color:var(--green);margin-top:2px;">FCFA reçus</div>
+      </div>
+      <div style="background:var(--amber-light);border-radius:var(--radius-sm);padding:12px;text-align:center;">
+        <div style="font-size:18px;font-weight:600;color:var(--amber);">35 000</div>
+        <div style="font-size:10px;color:var(--amber);margin-top:2px;">FCFA en attente</div>
+      </div>
+      <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:12px;text-align:center;">
+        <div style="font-size:18px;font-weight:600;color:var(--red);">1</div>
+        <div style="font-size:10px;color:var(--red);margin-top:2px;">En retard</div>
+      </div>
+    </div>
+    <div class="loyer-cards">
+      <div class="loyer-card">
+        <div class="loyer-card-header">
+          <div>
+            <div class="loyer-card-title">Studio meublé · Godomey</div>
+            <div class="loyer-card-ref">LOG-0042 · 35 000 FCFA/mois</div>
+          </div>
+          <span class="badge badge-green" style="font-size:10px;">Payé</span>
+        </div>
+        <div class="loyer-tenant">
+          <div class="mini-avatar">KM</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">Kossi Médé</div>
+            <div style="font-size:11px;color:var(--ink-light);">Locataire depuis mars 2026</div>
+          </div>
+        </div>
+        <div class="loyer-months">
+          <div class="month-pill paid">Mars ✓</div>
+          <div class="month-pill paid">Avr ✓</div>
+          <div class="month-pill paid">Mai ✓</div>
+          <div class="month-pill current">Juin</div>
+          <div class="month-pill future">Juil</div>
+          <div class="month-pill future">Août</div>
+        </div>
+        <div class="loyer-actions">
+          <button class="loyer-action-btn" onclick="showToast('Rappel envoyé via la messagerie')">Relancer</button>
+          <button class="loyer-action-btn primary" onclick="showToast('Lien MoMo copié — à envoyer au locataire')">Lien MoMo</button>
+        </div>
+      </div>
+
+      <div class="loyer-card">
+        <div class="loyer-card-header">
+          <div>
+            <div class="loyer-card-title">Chambre · Akpakpa</div>
+            <div class="loyer-card-ref">LOG-0118 · 22 000 FCFA/mois</div>
+          </div>
+          <span class="badge badge-amber" style="font-size:10px;">En attente</span>
+        </div>
+        <div class="loyer-tenant">
+          <div class="mini-avatar">AT</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">Amavi Tokoudagba</div>
+            <div style="font-size:11px;color:var(--ink-light);">Locataire depuis jan. 2026</div>
+          </div>
+        </div>
+        <div class="loyer-months">
+          <div class="month-pill paid">Jan ✓</div>
+          <div class="month-pill paid">Fév ✓</div>
+          <div class="month-pill paid">Mar ✓</div>
+          <div class="month-pill paid">Avr ✓</div>
+          <div class="month-pill paid">Mai ✓</div>
+          <div class="month-pill pending">Juin !</div>
+        </div>
+        <div class="loyer-actions">
+          <button class="loyer-action-btn" onclick="showToast('Relance automatique activée')">Relance auto</button>
+          <button class="loyer-action-btn primary" onclick="showToast('Lien MoMo envoyé en messagerie')">Envoyer lien</button>
+        </div>
+      </div>
+
+      <div class="loyer-card">
+        <div class="loyer-card-header">
+          <div>
+            <div class="loyer-card-title">F2 · Sainte Rita</div>
+            <div class="loyer-card-ref">LOG-0287 · 48 000 FCFA/mois</div>
+          </div>
+          <span class="badge badge-green" style="font-size:10px;">Payé</span>
+        </div>
+        <div class="loyer-tenant">
+          <div class="mini-avatar">SB</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">Sandra Biokou</div>
+            <div style="font-size:11px;color:var(--ink-light);">Locataire depuis fév. 2026</div>
+          </div>
+        </div>
+        <div class="loyer-months">
+          <div class="month-pill paid">Fév ✓</div>
+          <div class="month-pill paid">Mar ✓</div>
+          <div class="month-pill paid">Avr ✓</div>
+          <div class="month-pill paid">Mai ✓</div>
+          <div class="month-pill paid">Juin ✓</div>
+          <div class="month-pill future">Juil</div>
+        </div>
+        <div class="loyer-actions">
+          <button class="loyer-action-btn" onclick="showToast('Historique complet affiché')">Historique</button>
+          <button class="loyer-action-btn" onclick="showToast('Rapport PDF généré')">Rapport</button>
+        </div>
+      </div>
+    </div>
+    <div class="pb20"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 8 — RECHERCHE AVANCÉE
+════════════════════════════════════════ -->
+<div class="screen" id="screen-search">
+  <nav class="nav">
+    <div class="nav-logo">Loka<span>syn</span></div>
+  </nav>
+  <div class="content">
+    <div style="padding:16px;">
+      <div class="search-bar" style="margin-bottom:16px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--ink-light)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Godomey, Calavi, Cotonou…" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div class="form-group">
+          <div class="form-label">Budget max (FCFA)</div>
+          <select class="form-select">
+            <option>Tous les prix</option>
+            <option>≤ 15 000</option>
+            <option>≤ 25 000</option>
+            <option selected>≤ 40 000</option>
+            <option>≤ 60 000</option>
+            <option>≤ 100 000</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Type</div>
+          <select class="form-select">
+            <option>Tous</option>
+            <option>Chambre</option>
+            <option selected>Studio</option>
+            <option>F2</option>
+            <option>F3+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Meublé</div>
+          <select class="form-select">
+            <option>Indifférent</option>
+            <option selected>Oui</option>
+            <option>Non</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Disponibilité</div>
+          <select class="form-select">
+            <option selected>Immédiate</option>
+            <option>Dans 1 mois</option>
+            <option>Dans 3 mois</option>
+          </select>
+        </div>
+      </div>
+      <div class="filters" style="margin-bottom:16px;">
+        <button class="filter-pill active">Vérifié ✓</button>
+        <button class="filter-pill active" onclick="toggleFilter(this)">Étudiant OK</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Eau incluse</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Clim</button>
+        <button class="filter-pill" onclick="toggleFilter(this)">Parking</button>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:16px;" onclick="showToast('28 logements trouvés pour vos critères')">Rechercher</button>
+    </div>
+    <div class="section-header" style="padding-top:0;">
+      <div class="section-title">28 résultats</div>
+      <div class="section-link">Trier ↕</div>
+    </div>
+    <div class="listings-grid" style="padding-bottom:80px;">
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#E8F4EE,#b8ddc8);">🏠<div class="listing-badges"><span class="badge badge-verified">✓</span></div><button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button></div>
+        <div class="listing-body"><div class="listing-price">35 000 <span>FCFA/mois</span></div><div class="listing-title">Studio meublé</div><div class="listing-loc"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Godomey, Calavi</div></div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#FDF3E3,#f5ddb0);">🛏️<div class="listing-badges"><span class="badge badge-green">Étudiant</span></div><button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button></div>
+        <div class="listing-body"><div class="listing-price">22 000 <span>FCFA/mois</span></div><div class="listing-title">Chambre autonome</div><div class="listing-loc"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Agla, Calavi</div></div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#EEEDFE,#c8c4f0);">🏘️<div class="listing-badges"><span class="badge badge-verified">✓</span></div><button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button></div>
+        <div class="listing-body"><div class="listing-price">38 000 <span>FCFA/mois</span></div><div class="listing-title">Studio neuf</div><div class="listing-loc"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Cococodji, Calavi</div></div>
+      </div>
+      <div class="listing-card" onclick="goScreen('screen-detail')">
+        <div class="listing-img-placeholder" style="background:linear-gradient(135deg,#FBEAF0,#f4b8cc);">🏠<div class="listing-badges"><span class="badge badge-green">Dispo</span></div><button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button></div>
+        <div class="listing-body"><div class="listing-price">30 000 <span>FCFA/mois</span></div><div class="listing-title">Studio simple</div><div class="listing-loc"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Gbégamey, Cotonou</div></div>
+      </div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-item" onclick="goScreen('screen-home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Accueil</span></button>
+    <button class="bnav-item active"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>Recherche</span></button>
+    <button class="bnav-item" onclick="goScreen('screen-publish')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Publier</span></button>
+    <button class="bnav-item notif-dot" onclick="goScreen('screen-messages')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span></button>
+    <button class="bnav-item" onclick="goScreen('screen-profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profil</span></button>
+  </nav>
+</div>
+
+<script>
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).querySelector('.content')?.scrollTo(0,0);
+}
+function toggleFilter(el) {
+  el.classList.toggle('active');
+}
+function toggleFav(btn) {
+  if(btn.textContent === '♡') { btn.textContent = '♥'; btn.style.color='#C0392B'; showToast('Ajouté aux favoris'); }
+  else { btn.textContent = '♡'; btn.style.color=''; showToast('Retiré des favoris'); }
+}
+function selectType(el) {
+  document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function toggleBoost(el) {
+  const sw = document.getElementById('boostSwitch');
+  sw.classList.toggle('on');
+  showToast(sw.classList.contains('on') ? 'Boost Semaine activé — 2 000 FCFA' : 'Boost désactivé');
+}
+function selectCal(el) {
+  document.querySelectorAll('.cal-cell.selected').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectSlot(el) {
+  document.querySelectorAll('.slot-btn.selected').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function confirmRdv() {
+  document.getElementById('rdvModal').classList.remove('open');
+  showToast('Demande de visite envoyée au bailleur');
+  const sel = document.querySelector('.cal-cell.selected');
+  const slot = document.querySelector('.slot-btn.selected');
+  if(sel && slot) {
+    const card = document.createElement('div');
+    card.className = 'rdv-card';
+    const d = sel.textContent, t = slot.textContent;
+    card.innerHTML = `<div class="rdv-label"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Demande de visite</div><div class="rdv-date-display">Juin, ${d} · ${t}</div><div class="rdv-card-actions"><button class="rdv-accept" onclick="showToast('Visite confirmée !')">✓ Confirmer</button><button class="rdv-decline">Décliner</button></div>`;
+    document.getElementById('chatMessages').appendChild(card);
+    document.getElementById('chatMessages').scrollTop = 99999;
+  }
+}
+function closeModal(e) {
+  if(e.target === document.getElementById('rdvModal')) document.getElementById('rdvModal').classList.remove('open');
+}
+function sendMessage() {
+  const inp = document.getElementById('chatInput');
+  const txt = inp.value.trim();
+  if(!txt) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-bubble-wrap me';
+  wrap.innerHTML = `<div class="msg-bubble me">${txt}</div><div class="msg-time me-time">À l'instant ✓</div>`;
+  document.getElementById('chatMessages').appendChild(wrap);
+  inp.value = '';
+  document.getElementById('chatMessages').scrollTop = 99999;
+}
+function handleChatKey(e) {
+  if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
