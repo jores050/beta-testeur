@@ -3,434 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StartKaba — Admin Bêta</title>
+<title>StartKaba — Admin Beta</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --blue: #0722AB; --blue-l: #0722AB12; --blue-m: #0722AB30;
-  --green: #1A6B00; --green-l: #AEFF94; --green-p: #AEFF9420;
-  --orange: #F77E2D; --orange-l: #F77E2D15;
-  --red: #DC2626; --red-l: #DC262615;
-  --gray-50: #F7F8FC; --gray-100: #F0F1F7; --gray-200: #E2E4EE;
-  --gray-400: #9CA3B8; --gray-600: #6B6F85; --gray-900: #1A1C2A;
-  --white: #FFFFFF;
-  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#0722AB;--blue-l:#0722AB12;--blue-m:#0722AB30;
+  --green:#1A6B00;--green-l:#AEFF94;--green-p:#AEFF9420;
+  --orange:#F77E2D;--orange-l:#F77E2D15;
+  --red:#DC2626;--red-l:#DC262615;
+  --g50:#F7F8FC;--g100:#F0F1F7;--g200:#E2E4EE;
+  --g400:#9CA3B8;--g600:#6B6F85;--g900:#1A1C2A;
+  --white:#FFFFFF;--rsm:8px;--rmd:12px;--rlg:18px;--rxl:24px;
 }
-body { font-family: 'Montserrat', sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+body{font-family:'Montserrat',sans-serif;background:var(--g50);color:var(--g900);min-height:100vh}
 
-/* LOGIN */
-#loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
-.login-box { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 2.5rem; width: 100%; max-width: 380px; text-align: center; }
-.login-logo { font-size: 1.4rem; font-weight: 800; color: var(--blue); margin-bottom: 0.25rem; }
-.login-logo span { color: var(--orange); }
-.login-sub { font-size: 0.8rem; color: var(--gray-600); margin-bottom: 2rem; }
-.login-box input[type="password"] { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 0.75rem; }
-.login-box input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-l); }
-.login-btn { width: 100%; background: var(--blue); color: var(--white); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 0.75rem; border: none; border-radius: 100px; cursor: pointer; }
-.login-btn:hover { background: #0920A0; }
-.login-err { font-size: 0.78rem; color: var(--red); margin-top: 0.5rem; display: none; }
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.lbox{background:var(--white);border:1px solid var(--g200);border-radius:var(--rxl);padding:2.5rem;width:100%;max-width:380px;text-align:center}
+.llogo{font-size:1.4rem;font-weight:800;color:var(--blue);margin-bottom:.25rem}
+.llogo span{color:var(--orange)}
+.lsub{font-size:.8rem;color:var(--g600);margin-bottom:2rem}
+.lbox input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--g200);border-radius:var(--rsm);font-family:'Montserrat',sans-serif;font-size:.9rem;outline:none;margin-bottom:.75rem}
+.lbox input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-l)}
+.lbtn{width:100%;background:var(--blue);color:var(--white);font-family:'Montserrat',sans-serif;font-weight:700;font-size:.9rem;padding:.75rem;border:none;border-radius:100px;cursor:pointer}
+.lbtn:hover{background:#0920A0}
+.lerr{font-size:.78rem;color:var(--red);margin-top:.5rem;display:none}
 
-/* APP */
-#app { display: none; }
+#app{display:none}
 
-/* NAV */
-nav { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-.nav-logo { font-size: 1.1rem; font-weight: 800; color: var(--blue); }
-.nav-logo span { color: var(--orange); }
-.nav-right { display: flex; align-items: center; gap: 1rem; }
-.nav-badge { background: var(--blue-l); color: var(--blue); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
-.btn-refresh { background: none; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 0.4rem 0.9rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); cursor: pointer; }
-.btn-refresh:hover { border-color: var(--blue); color: var(--blue); }
+nav{background:var(--white);border-bottom:1px solid var(--g200);padding:.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nlogo{font-size:1.1rem;font-weight:800;color:var(--blue)}
+.nlogo span{color:var(--orange)}
+.nright{display:flex;align-items:center;gap:1rem}
+.nbadge{background:var(--blue-l);color:var(--blue);font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:100px}
+.brefresh{background:none;border:1.5px solid var(--g200);border-radius:var(--rsm);padding:.4rem .9rem;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:600;color:var(--g600);cursor:pointer}
+.brefresh:hover{border-color:var(--blue);color:var(--blue)}
 
-/* LAYOUT */
-.main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
 
-/* STATS */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.stat-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-md); padding: 1.1rem 1.25rem; }
-.stat-label { font-size: 0.72rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
-.stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
-.stat-value.blue { color: var(--blue); }
-.stat-value.green { color: var(--green); }
-.stat-value.orange { color: var(--orange); }
-.stat-value.red { color: var(--red); }
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.9rem;margin-bottom:2rem}
+.sc{background:var(--white);border:1px solid var(--g200);border-radius:var(--rmd);padding:1rem 1.1rem}
+.slabel{font-size:.65rem;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.35rem}
+.sval{font-size:1.9rem;font-weight:800;line-height:1}
+.sval.b{color:var(--blue)}.sval.g{color:var(--green)}.sval.o{color:var(--orange)}.sval.r{color:var(--red)}
 
-/* FILTRES */
-.filters { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.filter-btn { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 100px; padding: 0.4rem 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all 0.15s; }
-.filter-btn:hover, .filter-btn.active { border-color: var(--blue); background: var(--blue-l); color: var(--blue); }
-.search-input { flex: 1; min-width: 200px; padding: 0.45rem 0.9rem; border: 1.5px solid var(--gray-200); border-radius: 100px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; outline: none; }
-.search-input:focus { border-color: var(--blue); }
+.filters{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.fbtn{background:var(--white);border:1.5px solid var(--g200);border-radius:100px;padding:.35rem .9rem;font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:600;color:var(--g600);cursor:pointer;transition:all .15s}
+.fbtn:hover,.fbtn.active{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.sinput{flex:1;min-width:180px;padding:.4rem .9rem;border:1.5px solid var(--g200);border-radius:100px;font-family:'Montserrat',sans-serif;font-size:.78rem;outline:none}
+.sinput:focus{border-color:var(--blue)}
 
-/* TABLE */
-.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-lg); overflow: hidden; }
-.table-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.82rem; }
-.table-wrap th { text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
-.table-wrap td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
-.table-wrap tr:last-child td { border-bottom: none; }
-.table-wrap tr:hover td { background: var(--gray-50); }
+.clist{display:flex;flex-direction:column;gap:.9rem}
 
-/* col widths */
-.col-nom { width: 14%; }
-.col-wa { width: 14%; }
-.col-ville { width: 9%; }
-.col-idee { width: 9%; }
-.col-statut { width: 11%; }
-.col-checks { width: 13%; }
-.col-date { width: 10%; }
-.col-notes { width: 20%; }
+.cc{background:var(--white);border:1px solid var(--g200);border-radius:var(--rlg);overflow:hidden}
+.cc.s-en_attente{border-left:4px solid var(--orange)}
+.cc.s-accepte{border-left:4px solid var(--green)}
+.cc.s-actif{border-left:4px solid var(--blue)}
+.cc.s-refuse{border-left:4px solid var(--red)}
+.cc.s-termine{border-left:4px solid var(--g400)}
 
-/* BADGES */
-.badge { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
-.badge-attente { background: #FEF3C7; color: #92400E; }
-.badge-accepte { background: var(--green-p); color: var(--green); }
-.badge-refuse { background: var(--red-l); color: var(--red); }
-.badge-actif { background: var(--blue-l); color: var(--blue); }
-.badge-termine { background: var(--gray-100); color: var(--gray-600); }
+.ch{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;gap:.75rem;flex-wrap:wrap}
+.cid{display:flex;align-items:center;gap:.6rem}
+.av{width:38px;height:38px;border-radius:50%;background:var(--blue-l);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:var(--blue);flex-shrink:0}
+.cname{font-size:.9rem;font-weight:800}
+.cmeta{font-size:.68rem;color:var(--g600);margin-top:2px}
+.cact{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
 
-/* CHECKPOINTS */
-.checks { display: flex; gap: 4px; }
-.check-dot { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gray-200); font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-400); transition: all 0.15s; user-select: none; }
-.check-dot.done { background: var(--green); border-color: var(--green); color: var(--white); }
-.check-dot:hover:not(.done) { border-color: var(--blue); color: var(--blue); }
+.badge{display:inline-block;font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:100px;white-space:nowrap}
+.ba{background:#FEF3C7;color:#92400E}
+.bacc{background:var(--green-p);color:var(--green)}
+.bref{background:var(--red-l);color:var(--red)}
+.bact{background:var(--blue-l);color:var(--blue)}
+.bter{background:var(--g100);color:var(--g600)}
 
-/* SELECT statut */
-select.statut-sel { border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 3px 6px; font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 600; background: var(--white); cursor: pointer; outline: none; width: 100%; }
-select.statut-sel:focus { border-color: var(--blue); }
+.btn{display:inline-flex;align-items:center;gap:4px;padding:.3rem .75rem;border-radius:100px;font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;border:1.5px solid;cursor:pointer;white-space:nowrap;transition:all .15s;text-decoration:none}
+.btn-ok{background:var(--green-p);border-color:var(--green);color:var(--green)}
+.btn-ok:hover{background:var(--green);color:var(--white)}
+.btn-no{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.btn-no:hover{background:var(--red);color:var(--white)}
+.btn-wa{background:#E7FBF0;border-color:#25D366;color:#128C4E}
+.btn-wa:hover{background:#25D366;color:var(--white)}
+.btn-n{background:var(--white);border-color:var(--g200);color:var(--g600)}
+.btn-n:hover{border-color:var(--blue);color:var(--blue)}
 
-/* NOTES */
-textarea.note-ta { width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 0.4rem 0.6rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; resize: vertical; min-height: 54px; outline: none; color: var(--gray-900); }
-textarea.note-ta:focus { border-color: var(--blue); }
-.save-note-btn { margin-top: 4px; background: none; border: 1.5px solid var(--gray-200); border-radius: 100px; padding: 2px 10px; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 700; color: var(--gray-600); cursor: pointer; }
-.save-note-btn:hover { border-color: var(--green); color: var(--green); }
-.save-note-btn.saved { border-color: var(--green); color: var(--green); }
+.cbody{border-top:1px solid var(--g100);padding:.9rem 1.1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:680px){.cbody{grid-template-columns:1fr}}
 
-/* WA LINK */
-a.wa-link { color: #25D366; font-weight: 700; text-decoration: none; font-size: 0.78rem; word-break: break-all; }
-a.wa-link:hover { text-decoration: underline; }
+.stitle{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--g400);margin-bottom:.5rem}
 
-/* EMPTY / LOADING */
-.state-msg { text-align: center; padding: 3rem 1rem; color: var(--gray-400); font-size: 0.85rem; }
-.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--gray-200); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 0.75rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.chrow{display:flex;gap:.6rem}
+.chi{display:flex;flex-direction:column;align-items:center;gap:3px}
+.cdot{width:34px;height:34px;border-radius:50%;border:2px solid var(--g200);font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g400);transition:all .15s;user-select:none}
+.cdot.done{background:var(--green);border-color:var(--green);color:var(--white)}
+.cdot:hover:not(.done){border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+.clabel{font-size:.58rem;font-weight:700;color:var(--g600)}
 
-/* TOAST */
-#toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--gray-900); color: var(--white); font-size: 0.78rem; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 100px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 9999; }
-#toast.show { opacity: 1; }
+select.ssel{border:1.5px solid var(--g200);border-radius:var(--rsm);padding:5px 6px;font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:600;background:var(--white);cursor:pointer;outline:none;width:100%;margin-bottom:.5rem}
+select.ssel:focus{border-color:var(--blue)}
 
-/* MOTIVATION expand */
-.pourquoi-cell { font-size: 0.78rem; color: var(--gray-600); line-height: 1.5; }
-.expand-btn { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 0; margin-top: 2px; font-family: 'Montserrat', sans-serif; }
+.wabts{display:flex;flex-direction:column;gap:.35rem}
 
-@media (max-width: 768px) {
-  .table-wrap { overflow-x: auto; }
-  .table-wrap table { table-layout: auto; min-width: 900px; }
-  .main { padding: 1rem; }
-}
+textarea.nota{width:100%;border:1.5px solid var(--g200);border-radius:var(--rsm);padding:.45rem .65rem;font-family:'Montserrat',sans-serif;font-size:.75rem;resize:vertical;min-height:65px;outline:none;color:var(--g900)}
+textarea.nota:focus{border-color:var(--blue)}
+.snbtn{margin-top:4px;background:none;border:1.5px solid var(--g200);border-radius:100px;padding:2px 10px;font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--g600);cursor:pointer}
+.snbtn:hover{border-color:var(--green);color:var(--green)}
+.snbtn.saved{border-color:var(--green);color:var(--green)}
+
+.pourq{font-size:.76rem;color:var(--g600);line-height:1.55;font-style:italic}
+
+.smsg{text-align:center;padding:3rem 1rem;color:var(--g400);font-size:.85rem}
+.spin{display:inline-block;width:20px;height:20px;border:2px solid var(--g200);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;margin-bottom:.75rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--g900);color:var(--white);font-size:.78rem;font-weight:600;padding:.6rem 1.2rem;border-radius:100px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1}
+
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+#modal.open{display:flex}
+.mbox{background:var(--white);border-radius:var(--rxl);padding:1.75rem;max-width:500px;width:100%}
+.mtitle{font-size:1rem;font-weight:800;color:var(--blue);margin-bottom:.2rem}
+.msub{font-size:.75rem;color:var(--g600);margin-bottom:1rem}
+.mbox textarea{width:100%;border:1.5px solid var(--g200);border-radius:var(--rsm);padding:.7rem;font-family:'Montserrat',sans-serif;font-size:.8rem;line-height:1.6;min-height:180px;outline:none;resize:vertical}
+.mbox textarea:focus{border-color:var(--blue)}
+.macts{display:flex;gap:.6rem;margin-top:.9rem;justify-content:flex-end}
+.mcancel{background:none;border:1.5px solid var(--g200);border-radius:100px;padding:.45rem 1.1rem;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:600;color:var(--g600);cursor:pointer}
+.msend{background:#25D366;border:none;border-radius:100px;padding:.45rem 1.4rem;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--white);cursor:pointer;text-decoration:none;display:inline-block}
+.msend:hover{background:#1DA851}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Start<span>Kaba</span></div>
-    <p class="login-sub">Dashboard admin — accès restreint</p>
+  <div class="lbox">
+    <div class="llogo">Start<span>Kaba</span></div>
+    <p class="lsub">Dashboard admin — acces restreint</p>
     <input type="password" id="pwdInput" placeholder="Mot de passe" />
-    <button class="login-btn" onclick="checkLogin()">Accéder →</button>
-    <p class="login-err" id="loginErr">Mot de passe incorrect.</p>
+    <button class="lbtn" onclick="checkLogin()">Acceder</button>
+    <p class="lerr" id="loginErr">Mot de passe incorrect.</p>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <nav>
-    <div class="nav-logo">Start<span>Kaba</span> <span style="font-weight:400;font-size:0.85rem;color:var(--gray-600);margin-left:6px;">/ Admin Bêta</span></div>
-    <div class="nav-right">
-      <span class="nav-badge" id="navBadge">— candidats</span>
-      <button class="btn-refresh" onclick="loadData()">↺ Actualiser</button>
+    <div class="nlogo">Start<span>Kaba</span> <span style="font-weight:400;font-size:.85rem;color:var(--g600);margin-left:6px;">/ Admin Beta</span></div>
+    <div class="nright">
+      <span class="nbadge" id="navBadge">— candidats</span>
+      <button class="brefresh" onclick="loadData()">Actualiser</button>
     </div>
   </nav>
 
   <div class="main">
-
-    <!-- STATS -->
-    <div class="stats-grid" id="statsGrid">
-      <div class="stat-card"><div class="stat-label">Total candidats</div><div class="stat-value blue" id="sTot">—</div></div>
-      <div class="stat-card"><div class="stat-label">Acceptés</div><div class="stat-value green" id="sAcc">—</div></div>
-      <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-value orange" id="sAtt">—</div></div>
-      <div class="stat-card"><div class="stat-label">Refusés</div><div class="stat-value red" id="sRef">—</div></div>
-      <div class="stat-card"><div class="stat-label">J3 validés</div><div class="stat-value blue" id="sJ3">—</div></div>
-      <div class="stat-card"><div class="stat-label">J7 validés</div><div class="stat-value blue" id="sJ7">—</div></div>
-      <div class="stat-card"><div class="stat-label">J14 / Terminé</div><div class="stat-value green" id="sJ14">—</div></div>
+    <div class="sgrid">
+      <div class="sc"><div class="slabel">Total</div><div class="sval b" id="sTot">0</div></div>
+      <div class="sc"><div class="slabel">En attente</div><div class="sval o" id="sAtt">0</div></div>
+      <div class="sc"><div class="slabel">Acceptes</div><div class="sval g" id="sAcc">0</div></div>
+      <div class="sc"><div class="slabel">Actifs</div><div class="sval b" id="sAct">0</div></div>
+      <div class="sc"><div class="slabel">Refuses</div><div class="sval r" id="sRef">0</div></div>
+      <div class="sc"><div class="slabel">J3 valides</div><div class="sval b" id="sJ3">0</div></div>
+      <div class="sc"><div class="slabel">J7 valides</div><div class="sval b" id="sJ7">0</div></div>
+      <div class="sc"><div class="slabel">Termines</div><div class="sval g" id="sJ14">0</div></div>
     </div>
 
-    <!-- FILTRES -->
     <div class="filters">
-      <button class="filter-btn active" onclick="setFilter('tous', this)">Tous</button>
-      <button class="filter-btn" onclick="setFilter('en_attente', this)">En attente</button>
-      <button class="filter-btn" onclick="setFilter('accepte', this)">Acceptés</button>
-      <button class="filter-btn" onclick="setFilter('actif', this)">Actifs</button>
-      <button class="filter-btn" onclick="setFilter('refuse', this)">Refusés</button>
-      <button class="filter-btn" onclick="setFilter('termine', this)">Terminés</button>
-      <input class="search-input" type="text" id="searchInput" placeholder="Rechercher un prénom, ville..." oninput="renderTable()" />
+      <button class="fbtn active" onclick="setFilter('tous',this)">Tous</button>
+      <button class="fbtn" onclick="setFilter('en_attente',this)">En attente</button>
+      <button class="fbtn" onclick="setFilter('accepte',this)">Acceptes</button>
+      <button class="fbtn" onclick="setFilter('actif',this)">Actifs</button>
+      <button class="fbtn" onclick="setFilter('refuse',this)">Refuses</button>
+      <button class="fbtn" onclick="setFilter('termine',this)">Termines</button>
+      <input class="sinput" type="text" id="searchInput" placeholder="Rechercher prenom, ville..." oninput="renderCards()" />
     </div>
 
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th class="col-nom">Prénom</th>
-            <th class="col-wa">WhatsApp</th>
-            <th class="col-ville">Ville</th>
-            <th class="col-idee">Idée</th>
-            <th class="col-statut">Statut</th>
-            <th class="col-checks">J3 · J7 · J14</th>
-            <th class="col-date">Soumis</th>
-            <th class="col-notes">Notes</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <tr><td colspan="8"><div class="state-msg"><div class="spinner"></div><br>Chargement…</div></td></tr>
-        </tbody>
-      </table>
+    <div class="clist" id="clist">
+      <div class="smsg"><div class="spin"></div><br>Chargement...</div>
     </div>
+  </div>
+</div>
 
+<div id="modal">
+  <div class="mbox">
+    <div class="mtitle" id="mTitle">Message WhatsApp</div>
+    <div class="msub" id="mSub"></div>
+    <textarea id="mTxt"></textarea>
+    <div class="macts">
+      <button class="mcancel" onclick="closeModal()">Annuler</button>
+      <a class="msend" id="mLink" href="#" target="_blank" onclick="closeModal()">Ouvrir WhatsApp</a>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://lcffxhvmzzxhhpurunhc.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_PfNY0MXIIMmDuOsmQiGm9g__wFMph28';
-const TABLE        = 'beta_candidatures';
-const ADMIN_PWD    = 'startkaba2024';
+const SB_URL  = 'https://lcffxhvmzzxhhpurunhc.supabase.co';
+const SB_KEY  = 'sb_publishable_PfNY0MXIIMmDuOsmQiGm9g__wFMph28';
+const TABLE   = 'beta_candidatures';
+const PWD     = 'startkaba2024';
 
-let allData    = [];
-let filterMode = 'tous';
+let data = [];
+let filt = 'tous';
+let curWa = '';
 
-const IDEE_LABELS = {
-  oui_claire:  'Idée claire',
-  oui_vague:   'Idée vague',
-  non_cherche: 'Cherche idée'
-};
+const SL = {en_attente:'En attente',accepte:'Accepte',refuse:'Refuse',actif:'Actif',termine:'Termine'};
+const BC = {en_attente:'ba',accepte:'bacc',refuse:'bref',actif:'bact',termine:'bter'};
+const IL = {oui_claire:'Idee claire',oui_vague:'Idee vague',non_cherche:'Cherche idee'};
 
-const STATUT_CLASSES = {
-  en_attente: 'badge-attente',
-  accepte:    'badge-accepte',
-  refuse:     'badge-refuse',
-  actif:      'badge-actif',
-  termine:    'badge-termine'
-};
+function msgAccept(p){return`Salut ${p} ! Felicitations, tu es selectionne(e) pour la beta StartKaba !\n\nTon acces est actif maintenant : https://startkaba.vercel.app\n\nLe principe : 2 semaines, ~20 min par jour. Tu m'envoies ici sur WhatsApp chaque blocage ou suggestion au moment ou ca arrive.\n\nJe t'enverrai un check-in au jour 3, au jour 7 et au jour 14.\n\nUn seul engagement : des retours honnetes. Bonne chance ! `}
+function msgJ3(p){return`Salut ${p} ! Tu es au jour 3 de ta beta StartKaba.\n\n2 questions rapides :\n1. Tu en es ou dans ta progression ?\n2. Une chose qui t'a surpris ou bloque depuis le debut ?\n\nPas besoin d'ecrire long, un vocal de 30 secondes suffit.`}
+function msgJ7(p){return`Salut ${p} ! Mi-parcours de ta beta StartKaba.\n\n3 questions courtes :\n1. Ce que tu retiens le plus jusqu'ici (une chose)\n2. Ce qui t'a le plus bloque ou frustre\n3. Tu conseillerais StartKaba a qui autour de toi ?\n\nEt sur 10, tu recommanderais StartKaba a un ami entrepreneur ?`}
+function msgJ14(p){return`Salut ${p} ! Tu arrives a la fin de tes 2 semaines de beta StartKaba, merci !\n\nJe voudrais faire un appel rapide de 20 minutes pour recueillir ton retour complet.\n\nTu es dispo quand cette semaine ? Propose-moi 2-3 creneaux et je m'adapte.`}
 
-const STATUT_LABELS = {
-  en_attente: 'En attente',
-  accepte:    'Accepté',
-  refuse:     'Refusé',
-  actif:      'Actif',
-  termine:    'Terminé'
-};
-
-function checkLogin() {
-  const val = document.getElementById('pwdInput').value;
-  if (val === ADMIN_PWD) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+function checkLogin(){
+  if(document.getElementById('pwdInput').value===PWD){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
     loadData();
-  } else {
-    document.getElementById('loginErr').style.display = 'block';
-  }
+  }else{document.getElementById('loginErr').style.display='block'}
+}
+document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin()});
+
+async function sbFetch(url,opts={}){
+  return fetch(url,{...opts,headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json',...(opts.headers||{})}});
 }
 
-document.getElementById('pwdInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkLogin();
-});
-
-async function sbFetch(url, opts = {}) {
-  const headers = {
-    'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
-    'Content-Type': 'application/json',
-    ...opts.headers
-  };
-  return fetch(url, { ...opts, headers });
+async function loadData(){
+  try{
+    const r=await sbFetch(`${SB_URL}/rest/v1/${TABLE}?order=soumis_le.desc`);
+    if(!r.ok)throw new Error(r.statusText);
+    data=await r.json();
+    updateStats();renderCards();
+    document.getElementById('navBadge').textContent=data.length+' candidat'+(data.length>1?'s':'');
+  }catch(e){document.getElementById('clist').innerHTML='<div class="smsg">Erreur Supabase.</div>'}
 }
 
-async function loadData() {
-  try {
-    const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?order=soumis_le.desc`);
-    if (!res.ok) throw new Error(res.statusText);
-    allData = await res.json();
-    updateStats();
-    renderTable();
-    document.getElementById('navBadge').textContent = allData.length + ' candidats';
-  } catch (err) {
-    document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="8"><div class="state-msg">Erreur de chargement — vérifie la connexion Supabase.</div></td></tr>`;
-  }
+function updateStats(){
+  document.getElementById('sTot').textContent=data.length;
+  document.getElementById('sAtt').textContent=data.filter(r=>r.statut==='en_attente').length;
+  document.getElementById('sAcc').textContent=data.filter(r=>r.statut==='accepte').length;
+  document.getElementById('sAct').textContent=data.filter(r=>r.statut==='actif').length;
+  document.getElementById('sRef').textContent=data.filter(r=>r.statut==='refuse').length;
+  document.getElementById('sJ3').textContent=data.filter(r=>r.check_j3).length;
+  document.getElementById('sJ7').textContent=data.filter(r=>r.check_j7).length;
+  document.getElementById('sJ14').textContent=data.filter(r=>r.check_j14||r.statut==='termine').length;
 }
 
-function updateStats() {
-  const tot  = allData.length;
-  const acc  = allData.filter(r => r.statut === 'accepte').length;
-  const att  = allData.filter(r => r.statut === 'en_attente').length;
-  const ref  = allData.filter(r => r.statut === 'refuse').length;
-  const j3   = allData.filter(r => r.check_j3).length;
-  const j7   = allData.filter(r => r.check_j7).length;
-  const j14  = allData.filter(r => r.check_j14 || r.statut === 'termine').length;
-  document.getElementById('sTot').textContent  = tot;
-  document.getElementById('sAcc').textContent  = acc;
-  document.getElementById('sAtt').textContent  = att;
-  document.getElementById('sRef').textContent  = ref;
-  document.getElementById('sJ3').textContent   = j3;
-  document.getElementById('sJ7').textContent   = j7;
-  document.getElementById('sJ14').textContent  = j14;
+function setFilter(m,btn){
+  filt=m;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderCards();
 }
 
-function setFilter(mode, btn) {
-  filterMode = mode;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderTable();
-}
-
-function filtered() {
-  const q = (document.getElementById('searchInput').value || '').toLowerCase();
-  return allData.filter(r => {
-    const matchFilter = filterMode === 'tous' || r.statut === filterMode;
-    const matchSearch = !q ||
-      (r.prenom || '').toLowerCase().includes(q) ||
-      (r.ville  || '').toLowerCase().includes(q) ||
-      (r.whatsapp || '').includes(q);
-    return matchFilter && matchSearch;
+function getFiltered(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  return data.filter(r=>{
+    const mf=filt==='tous'||r.statut===filt;
+    const ms=!q||(r.prenom||'').toLowerCase().includes(q)||(r.ville||'').toLowerCase().includes(q)||(r.whatsapp||'').includes(q);
+    return mf&&ms;
   });
 }
 
-function fmtDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
-}
+function ini(p){return(p||'?').slice(0,2).toUpperCase()}
+function fmtD(iso){if(!iso)return'--';return new Date(iso).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'})}
 
-function renderTable() {
-  const rows = filtered();
-  const tb   = document.getElementById('tableBody');
-
-  if (rows.length === 0) {
-    tb.innerHTML = `<tr><td colspan="8"><div class="state-msg">Aucun résultat.</div></td></tr>`;
-    return;
-  }
-
-  tb.innerHTML = rows.map(r => {
-    const statut   = r.statut || 'en_attente';
-    const bClass   = STATUT_CLASSES[statut] || 'badge-attente';
-    const waNum    = (r.whatsapp || '').replace(/\D/g, '');
-    const ideeL    = IDEE_LABELS[r.idee] || r.idee || '—';
-    const notes    = (r.notes_internes || '').replace(/"/g, '&quot;');
-    const pourquoi = (r.pourquoi || '');
-    const shortP   = pourquoi.length > 60 ? pourquoi.slice(0, 60) + '…' : pourquoi;
-
-    const statOpts = ['en_attente','accepte','actif','refuse','termine']
-      .map(s => `<option value="${s}" ${statut===s?'selected':''}>${STATUT_LABELS[s]}</option>`)
-      .join('');
-
-    return `<tr data-id="${r.id}">
-      <td style="font-weight:700;">${r.prenom || '—'}</td>
-      <td>
-        <a class="wa-link" href="https://wa.me/${waNum}" target="_blank">${r.whatsapp || '—'}</a>
-      </td>
-      <td>${r.ville || '—'}</td>
-      <td style="font-size:0.75rem;color:var(--gray-600);">${ideeL}</td>
-      <td>
-        <select class="statut-sel" onchange="updateStatut('${r.id}', this.value)">
-          ${statOpts}
-        </select>
-      </td>
-      <td>
-        <div class="checks">
-          <div class="check-dot ${r.check_j3 ?'done':''}" onclick="toggleCheck('${r.id}','check_j3',this)" title="J3">J3</div>
-          <div class="check-dot ${r.check_j7 ?'done':''}" onclick="toggleCheck('${r.id}','check_j7',this)" title="J7">J7</div>
-          <div class="check-dot ${r.check_j14?'done':''}" onclick="toggleCheck('${r.id}','check_j14',this)" title="J14">J14</div>
-        </div>
-      </td>
-      <td style="font-size:0.75rem;color:var(--gray-600);">${fmtDate(r.soumis_le)}<br>
-        <span style="font-size:0.68rem;color:var(--gray-400);">${r.decouverte||'—'}</span>
-      </td>
-      <td>
-        <div class="pourquoi-cell" id="pq-${r.id}" title="${pourquoi}">${shortP}
-          ${pourquoi.length>60?`<br><button class="expand-btn" onclick="expandP('${r.id}','${pourquoi.replace(/'/g,"\\'")}')">voir +</button>`:''}
-        </div>
-        <textarea class="note-ta" id="note-${r.id}" placeholder="Notes internes…">${notes}</textarea>
-        <button class="save-note-btn" id="savebtn-${r.id}" onclick="saveNote('${r.id}')">Sauvegarder</button>
-      </td>
-    </tr>`;
+function renderCards(){
+  const rows=getFiltered();
+  const list=document.getElementById('clist');
+  if(!rows.length){list.innerHTML='<div class="smsg">Aucun resultat.</div>';return}
+  list.innerHTML=rows.map(r=>{
+    const id=r.id,prenom=r.prenom||'--',statut=r.statut||'en_attente';
+    const waNum=(r.whatsapp||'').replace(/\D/g,'');
+    const ideeL=IL[r.idee]||r.idee||'--';
+    const notes=(r.notes_internes||'').replace(/"/g,'&quot;');
+    const estAccepte=['accepte','actif','termine'].includes(statut);
+    const sOpts=['en_attente','accepte','actif','refuse','termine'].map(s=>`<option value="${s}"${statut===s?' selected':''}>${SL[s]}</option>`).join('');
+    return`<div class="cc s-${statut}" id="cc-${id}">
+  <div class="ch">
+    <div class="cid">
+      <div class="av">${ini(prenom)}</div>
+      <div>
+        <div class="cname">${prenom}</div>
+        <div class="cmeta">${r.ville||'--'} &middot; ${ideeL} &middot; ${fmtD(r.soumis_le)} &middot; ${r.decouverte||'--'}</div>
+      </div>
+    </div>
+    <div class="cact">
+      <span class="badge ${BC[statut]||'ba'}">${SL[statut]}</span>
+      ${!estAccepte?`<button class="btn btn-ok" onclick="accepter('${id}','${prenom}','${waNum}')">Accepter</button>`:''}
+      ${statut==='en_attente'?`<button class="btn btn-no" onclick="refuser('${id}')">Refuser</button>`:''}
+      <a class="btn btn-wa" href="https://wa.me/${waNum}" target="_blank">${r.whatsapp||'--'}</a>
+    </div>
+  </div>
+  <div class="cbody">
+    <div>
+      <div class="stitle">Motivation</div>
+      <div class="pourq">"${r.pourquoi||'--'}"</div>
+    </div>
+    <div>
+      <div class="stitle">Suivi beta</div>
+      <select class="ssel" onchange="updateStatut('${id}',this.value)">${sOpts}</select>
+      <div class="chrow">
+        <div class="chi"><div class="cdot${r.check_j3?' done':''}" onclick="toggleCheck('${id}','check_j3',this)">J3</div><div class="clabel">Jour 3</div></div>
+        <div class="chi"><div class="cdot${r.check_j7?' done':''}" onclick="toggleCheck('${id}','check_j7',this)">J7</div><div class="clabel">Jour 7</div></div>
+        <div class="chi"><div class="cdot${r.check_j14?' done':''}" onclick="toggleCheck('${id}','check_j14',this)">J14</div><div class="clabel">Jour 14</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="stitle">Messages WhatsApp</div>
+      <div class="wabts">
+        ${estAccepte?`<button class="btn btn-wa" style="width:100%;justify-content:center" onclick="openMsg('${id}','bienvenue','${prenom}','${waNum}')">Bienvenue</button>`:''}
+        <button class="btn btn-n" style="width:100%;justify-content:center" onclick="openMsg('${id}','j3','${prenom}','${waNum}')">Check-in J3</button>
+        <button class="btn btn-n" style="width:100%;justify-content:center" onclick="openMsg('${id}','j7','${prenom}','${waNum}')">Check-in J7</button>
+        <button class="btn btn-n" style="width:100%;justify-content:center" onclick="openMsg('${id}','j14','${prenom}','${waNum}')">Check-in J14</button>
+      </div>
+    </div>
+    <div style="grid-column:1/-1">
+      <div class="stitle">Notes internes</div>
+      <textarea class="nota" id="note-${id}" placeholder="Tes observations...">${notes}</textarea>
+      <button class="snbtn" id="snbtn-${id}" onclick="saveNote('${id}')">Sauvegarder</button>
+    </div>
+  </div>
+</div>`;
   }).join('');
 }
 
-function expandP(id, full) {
-  const el = document.getElementById('pq-'+id);
-  if (el) el.innerHTML = `<span style="white-space:pre-wrap;">${full}</span>`;
+async function accepter(id,prenom,waNum){
+  await sbPatch(id,{statut:'accepte'});
+  const i=data.findIndex(r=>r.id===id);
+  if(i!==-1)data[i].statut='accepte';
+  updateStats();renderCards();
+  openMsg(id,'bienvenue',prenom,waNum);
+  toast('Candidat accepte');
 }
 
-async function updateStatut(id, newStatut) {
-  const idx = allData.findIndex(r => r.id === id);
-  if (idx !== -1) allData[idx].statut = newStatut;
+async function refuser(id){
+  await sbPatch(id,{statut:'refuse'});
+  const i=data.findIndex(r=>r.id===id);
+  if(i!==-1)data[i].statut='refuse';
+  updateStats();renderCards();
+  toast('Candidature refusee');
+}
+
+async function updateStatut(id,v){
+  const i=data.findIndex(r=>r.id===id);
+  if(i!==-1)data[i].statut=v;
   updateStats();
-  try {
-    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ statut: newStatut })
-    });
-    toast('Statut mis à jour ✓');
-  } catch { toast('Erreur de mise à jour', true); }
+  await sbPatch(id,{statut:v});
+  toast('Statut mis a jour');
 }
 
-async function toggleCheck(id, field, el) {
-  const idx = allData.findIndex(r => r.id === id);
-  if (idx === -1) return;
-  const newVal = !allData[idx][field];
-  allData[idx][field] = newVal;
-  el.classList.toggle('done', newVal);
+async function toggleCheck(id,field,el){
+  const i=data.findIndex(r=>r.id===id);
+  if(i===-1)return;
+  const nv=!data[i][field];
+  data[i][field]=nv;
+  el.classList.toggle('done',nv);
   updateStats();
-  try {
-    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ [field]: newVal })
-    });
-    toast(field.toUpperCase().replace('_',' ') + (newVal ? ' validé ✓' : ' retiré'));
-  } catch { toast('Erreur', true); }
+  await sbPatch(id,{[field]:nv});
+  toast(field.replace('check_','').toUpperCase()+(nv?' valide':' retire'));
 }
 
-async function saveNote(id) {
-  const val = document.getElementById('note-'+id).value;
-  const btn = document.getElementById('savebtn-'+id);
-  const idx = allData.findIndex(r => r.id === id);
-  if (idx !== -1) allData[idx].notes_internes = val;
-  try {
-    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ notes_internes: val })
-    });
-    btn.textContent = 'Sauvegardé ✓';
-    btn.classList.add('saved');
-    setTimeout(() => { btn.textContent = 'Sauvegarder'; btn.classList.remove('saved'); }, 2000);
-  } catch { toast('Erreur de sauvegarde', true); }
+async function saveNote(id){
+  const val=document.getElementById('note-'+id).value;
+  const btn=document.getElementById('snbtn-'+id);
+  const i=data.findIndex(r=>r.id===id);
+  if(i!==-1)data[i].notes_internes=val;
+  await sbPatch(id,{notes_internes:val});
+  btn.textContent='Sauvegarde';btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='Sauvegarder';btn.classList.remove('saved')},2200);
 }
 
-let toastTimer;
-function toast(msg, isErr = false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.background = isErr ? 'var(--red)' : 'var(--gray-900)';
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+async function sbPatch(id,body){
+  try{
+    await sbFetch(`${SB_URL}/rest/v1/${TABLE}?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+  }catch(e){toast('Erreur Supabase',true)}
+}
+
+function openMsg(id,type,prenom,waNum){
+  curWa=waNum;
+  const T={bienvenue:'Message de bienvenue',j3:'Check-in Jour 3',j7:'Check-in Jour 7',j14:'Check-in Jour 14'};
+  const M={bienvenue:msgAccept(prenom),j3:msgJ3(prenom),j7:msgJ7(prenom),j14:msgJ14(prenom)};
+  const r=data.find(x=>x.id===id)||{};
+  document.getElementById('mTitle').textContent=T[type];
+  document.getElementById('mSub').textContent='Pour '+prenom+' — '+(r.whatsapp||'');
+  document.getElementById('mTxt').value=M[type];
+  updateMLink();
+  document.getElementById('modal').classList.add('open');
+}
+
+function updateMLink(){
+  document.getElementById('mLink').href='https://wa.me/'+curWa+'?text='+encodeURIComponent(document.getElementById('mTxt').value);
+}
+document.getElementById('mTxt').addEventListener('input',updateMLink);
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal()});
+
+let tt;
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.background=err?'var(--red)':'var(--g900)';
+  el.classList.add('show');clearTimeout(tt);
+  tt=setTimeout(()=>el.classList.remove('show'),2200);
 }
 </script>
 </body>
