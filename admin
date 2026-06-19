@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartKaba — Admin Bêta</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #0722AB; --blue-l: #0722AB12; --blue-m: #0722AB30;
+  --green: #1A6B00; --green-l: #AEFF94; --green-p: #AEFF9420;
+  --orange: #F77E2D; --orange-l: #F77E2D15;
+  --red: #DC2626; --red-l: #DC262615;
+  --gray-50: #F7F8FC; --gray-100: #F0F1F7; --gray-200: #E2E4EE;
+  --gray-400: #9CA3B8; --gray-600: #6B6F85; --gray-900: #1A1C2A;
+  --white: #FFFFFF;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
+}
+body { font-family: 'Montserrat', sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+
+/* LOGIN */
+#loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+.login-box { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-xl); padding: 2.5rem; width: 100%; max-width: 380px; text-align: center; }
+.login-logo { font-size: 1.4rem; font-weight: 800; color: var(--blue); margin-bottom: 0.25rem; }
+.login-logo span { color: var(--orange); }
+.login-sub { font-size: 0.8rem; color: var(--gray-600); margin-bottom: 2rem; }
+.login-box input[type="password"] { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 0.75rem; }
+.login-box input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-l); }
+.login-btn { width: 100%; background: var(--blue); color: var(--white); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 0.75rem; border: none; border-radius: 100px; cursor: pointer; }
+.login-btn:hover { background: #0920A0; }
+.login-err { font-size: 0.78rem; color: var(--red); margin-top: 0.5rem; display: none; }
+
+/* APP */
+#app { display: none; }
+
+/* NAV */
+nav { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-size: 1.1rem; font-weight: 800; color: var(--blue); }
+.nav-logo span { color: var(--orange); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.nav-badge { background: var(--blue-l); color: var(--blue); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+.btn-refresh { background: none; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 0.4rem 0.9rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); cursor: pointer; }
+.btn-refresh:hover { border-color: var(--blue); color: var(--blue); }
+
+/* LAYOUT */
+.main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-md); padding: 1.1rem 1.25rem; }
+.stat-label { font-size: 0.72rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+.stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+.stat-value.blue { color: var(--blue); }
+.stat-value.green { color: var(--green); }
+.stat-value.orange { color: var(--orange); }
+.stat-value.red { color: var(--red); }
+
+/* FILTRES */
+.filters { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.filter-btn { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 100px; padding: 0.4rem 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover, .filter-btn.active { border-color: var(--blue); background: var(--blue-l); color: var(--blue); }
+.search-input { flex: 1; min-width: 200px; padding: 0.45rem 0.9rem; border: 1.5px solid var(--gray-200); border-radius: 100px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; outline: none; }
+.search-input:focus { border-color: var(--blue); }
+
+/* TABLE */
+.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--r-lg); overflow: hidden; }
+.table-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.82rem; }
+.table-wrap th { text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+.table-wrap td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap tr:hover td { background: var(--gray-50); }
+
+/* col widths */
+.col-nom { width: 14%; }
+.col-wa { width: 14%; }
+.col-ville { width: 9%; }
+.col-idee { width: 9%; }
+.col-statut { width: 11%; }
+.col-checks { width: 13%; }
+.col-date { width: 10%; }
+.col-notes { width: 20%; }
+
+/* BADGES */
+.badge { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
+.badge-attente { background: #FEF3C7; color: #92400E; }
+.badge-accepte { background: var(--green-p); color: var(--green); }
+.badge-refuse { background: var(--red-l); color: var(--red); }
+.badge-actif { background: var(--blue-l); color: var(--blue); }
+.badge-termine { background: var(--gray-100); color: var(--gray-600); }
+
+/* CHECKPOINTS */
+.checks { display: flex; gap: 4px; }
+.check-dot { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--gray-200); font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-400); transition: all 0.15s; user-select: none; }
+.check-dot.done { background: var(--green); border-color: var(--green); color: var(--white); }
+.check-dot:hover:not(.done) { border-color: var(--blue); color: var(--blue); }
+
+/* SELECT statut */
+select.statut-sel { border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 3px 6px; font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 600; background: var(--white); cursor: pointer; outline: none; width: 100%; }
+select.statut-sel:focus { border-color: var(--blue); }
+
+/* NOTES */
+textarea.note-ta { width: 100%; border: 1.5px solid var(--gray-200); border-radius: var(--r-sm); padding: 0.4rem 0.6rem; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; resize: vertical; min-height: 54px; outline: none; color: var(--gray-900); }
+textarea.note-ta:focus { border-color: var(--blue); }
+.save-note-btn { margin-top: 4px; background: none; border: 1.5px solid var(--gray-200); border-radius: 100px; padding: 2px 10px; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 700; color: var(--gray-600); cursor: pointer; }
+.save-note-btn:hover { border-color: var(--green); color: var(--green); }
+.save-note-btn.saved { border-color: var(--green); color: var(--green); }
+
+/* WA LINK */
+a.wa-link { color: #25D366; font-weight: 700; text-decoration: none; font-size: 0.78rem; word-break: break-all; }
+a.wa-link:hover { text-decoration: underline; }
+
+/* EMPTY / LOADING */
+.state-msg { text-align: center; padding: 3rem 1rem; color: var(--gray-400); font-size: 0.85rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--gray-200); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 0.75rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+#toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--gray-900); color: var(--white); font-size: 0.78rem; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 100px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 9999; }
+#toast.show { opacity: 1; }
+
+/* MOTIVATION expand */
+.pourquoi-cell { font-size: 0.78rem; color: var(--gray-600); line-height: 1.5; }
+.expand-btn { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 0; margin-top: 2px; font-family: 'Montserrat', sans-serif; }
+
+@media (max-width: 768px) {
+  .table-wrap { overflow-x: auto; }
+  .table-wrap table { table-layout: auto; min-width: 900px; }
+  .main { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Start<span>Kaba</span></div>
+    <p class="login-sub">Dashboard admin — accès restreint</p>
+    <input type="password" id="pwdInput" placeholder="Mot de passe" />
+    <button class="login-btn" onclick="checkLogin()">Accéder →</button>
+    <p class="login-err" id="loginErr">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav>
+    <div class="nav-logo">Start<span>Kaba</span> <span style="font-weight:400;font-size:0.85rem;color:var(--gray-600);margin-left:6px;">/ Admin Bêta</span></div>
+    <div class="nav-right">
+      <span class="nav-badge" id="navBadge">— candidats</span>
+      <button class="btn-refresh" onclick="loadData()">↺ Actualiser</button>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <!-- STATS -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-label">Total candidats</div><div class="stat-value blue" id="sTot">—</div></div>
+      <div class="stat-card"><div class="stat-label">Acceptés</div><div class="stat-value green" id="sAcc">—</div></div>
+      <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-value orange" id="sAtt">—</div></div>
+      <div class="stat-card"><div class="stat-label">Refusés</div><div class="stat-value red" id="sRef">—</div></div>
+      <div class="stat-card"><div class="stat-label">J3 validés</div><div class="stat-value blue" id="sJ3">—</div></div>
+      <div class="stat-card"><div class="stat-label">J7 validés</div><div class="stat-value blue" id="sJ7">—</div></div>
+      <div class="stat-card"><div class="stat-label">J14 / Terminé</div><div class="stat-value green" id="sJ14">—</div></div>
+    </div>
+
+    <!-- FILTRES -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('tous', this)">Tous</button>
+      <button class="filter-btn" onclick="setFilter('en_attente', this)">En attente</button>
+      <button class="filter-btn" onclick="setFilter('accepte', this)">Acceptés</button>
+      <button class="filter-btn" onclick="setFilter('actif', this)">Actifs</button>
+      <button class="filter-btn" onclick="setFilter('refuse', this)">Refusés</button>
+      <button class="filter-btn" onclick="setFilter('termine', this)">Terminés</button>
+      <input class="search-input" type="text" id="searchInput" placeholder="Rechercher un prénom, ville..." oninput="renderTable()" />
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-nom">Prénom</th>
+            <th class="col-wa">WhatsApp</th>
+            <th class="col-ville">Ville</th>
+            <th class="col-idee">Idée</th>
+            <th class="col-statut">Statut</th>
+            <th class="col-checks">J3 · J7 · J14</th>
+            <th class="col-date">Soumis</th>
+            <th class="col-notes">Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="8"><div class="state-msg"><div class="spinner"></div><br>Chargement…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://lcffxhvmzzxhhpurunhc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_PfNY0MXIIMmDuOsmQiGm9g__wFMph28';
+const TABLE        = 'beta_candidatures';
+const ADMIN_PWD    = 'startkaba2024';
+
+let allData    = [];
+let filterMode = 'tous';
+
+const IDEE_LABELS = {
+  oui_claire:  'Idée claire',
+  oui_vague:   'Idée vague',
+  non_cherche: 'Cherche idée'
+};
+
+const STATUT_CLASSES = {
+  en_attente: 'badge-attente',
+  accepte:    'badge-accepte',
+  refuse:     'badge-refuse',
+  actif:      'badge-actif',
+  termine:    'badge-termine'
+};
+
+const STATUT_LABELS = {
+  en_attente: 'En attente',
+  accepte:    'Accepté',
+  refuse:     'Refusé',
+  actif:      'Actif',
+  termine:    'Terminé'
+};
+
+function checkLogin() {
+  const val = document.getElementById('pwdInput').value;
+  if (val === ADMIN_PWD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+document.getElementById('pwdInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkLogin();
+});
+
+async function sbFetch(url, opts = {}) {
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    ...opts.headers
+  };
+  return fetch(url, { ...opts, headers });
+}
+
+async function loadData() {
+  try {
+    const res = await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?order=soumis_le.desc`);
+    if (!res.ok) throw new Error(res.statusText);
+    allData = await res.json();
+    updateStats();
+    renderTable();
+    document.getElementById('navBadge').textContent = allData.length + ' candidats';
+  } catch (err) {
+    document.getElementById('tableBody').innerHTML =
+      `<tr><td colspan="8"><div class="state-msg">Erreur de chargement — vérifie la connexion Supabase.</div></td></tr>`;
+  }
+}
+
+function updateStats() {
+  const tot  = allData.length;
+  const acc  = allData.filter(r => r.statut === 'accepte').length;
+  const att  = allData.filter(r => r.statut === 'en_attente').length;
+  const ref  = allData.filter(r => r.statut === 'refuse').length;
+  const j3   = allData.filter(r => r.check_j3).length;
+  const j7   = allData.filter(r => r.check_j7).length;
+  const j14  = allData.filter(r => r.check_j14 || r.statut === 'termine').length;
+  document.getElementById('sTot').textContent  = tot;
+  document.getElementById('sAcc').textContent  = acc;
+  document.getElementById('sAtt').textContent  = att;
+  document.getElementById('sRef').textContent  = ref;
+  document.getElementById('sJ3').textContent   = j3;
+  document.getElementById('sJ7').textContent   = j7;
+  document.getElementById('sJ14').textContent  = j14;
+}
+
+function setFilter(mode, btn) {
+  filterMode = mode;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function filtered() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  return allData.filter(r => {
+    const matchFilter = filterMode === 'tous' || r.statut === filterMode;
+    const matchSearch = !q ||
+      (r.prenom || '').toLowerCase().includes(q) ||
+      (r.ville  || '').toLowerCase().includes(q) ||
+      (r.whatsapp || '').includes(q);
+    return matchFilter && matchSearch;
+  });
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+}
+
+function renderTable() {
+  const rows = filtered();
+  const tb   = document.getElementById('tableBody');
+
+  if (rows.length === 0) {
+    tb.innerHTML = `<tr><td colspan="8"><div class="state-msg">Aucun résultat.</div></td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = rows.map(r => {
+    const statut   = r.statut || 'en_attente';
+    const bClass   = STATUT_CLASSES[statut] || 'badge-attente';
+    const waNum    = (r.whatsapp || '').replace(/\D/g, '');
+    const ideeL    = IDEE_LABELS[r.idee] || r.idee || '—';
+    const notes    = (r.notes_internes || '').replace(/"/g, '&quot;');
+    const pourquoi = (r.pourquoi || '');
+    const shortP   = pourquoi.length > 60 ? pourquoi.slice(0, 60) + '…' : pourquoi;
+
+    const statOpts = ['en_attente','accepte','actif','refuse','termine']
+      .map(s => `<option value="${s}" ${statut===s?'selected':''}>${STATUT_LABELS[s]}</option>`)
+      .join('');
+
+    return `<tr data-id="${r.id}">
+      <td style="font-weight:700;">${r.prenom || '—'}</td>
+      <td>
+        <a class="wa-link" href="https://wa.me/${waNum}" target="_blank">${r.whatsapp || '—'}</a>
+      </td>
+      <td>${r.ville || '—'}</td>
+      <td style="font-size:0.75rem;color:var(--gray-600);">${ideeL}</td>
+      <td>
+        <select class="statut-sel" onchange="updateStatut('${r.id}', this.value)">
+          ${statOpts}
+        </select>
+      </td>
+      <td>
+        <div class="checks">
+          <div class="check-dot ${r.check_j3 ?'done':''}" onclick="toggleCheck('${r.id}','check_j3',this)" title="J3">J3</div>
+          <div class="check-dot ${r.check_j7 ?'done':''}" onclick="toggleCheck('${r.id}','check_j7',this)" title="J7">J7</div>
+          <div class="check-dot ${r.check_j14?'done':''}" onclick="toggleCheck('${r.id}','check_j14',this)" title="J14">J14</div>
+        </div>
+      </td>
+      <td style="font-size:0.75rem;color:var(--gray-600);">${fmtDate(r.soumis_le)}<br>
+        <span style="font-size:0.68rem;color:var(--gray-400);">${r.decouverte||'—'}</span>
+      </td>
+      <td>
+        <div class="pourquoi-cell" id="pq-${r.id}" title="${pourquoi}">${shortP}
+          ${pourquoi.length>60?`<br><button class="expand-btn" onclick="expandP('${r.id}','${pourquoi.replace(/'/g,"\\'")}')">voir +</button>`:''}
+        </div>
+        <textarea class="note-ta" id="note-${r.id}" placeholder="Notes internes…">${notes}</textarea>
+        <button class="save-note-btn" id="savebtn-${r.id}" onclick="saveNote('${r.id}')">Sauvegarder</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function expandP(id, full) {
+  const el = document.getElementById('pq-'+id);
+  if (el) el.innerHTML = `<span style="white-space:pre-wrap;">${full}</span>`;
+}
+
+async function updateStatut(id, newStatut) {
+  const idx = allData.findIndex(r => r.id === id);
+  if (idx !== -1) allData[idx].statut = newStatut;
+  updateStats();
+  try {
+    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ statut: newStatut })
+    });
+    toast('Statut mis à jour ✓');
+  } catch { toast('Erreur de mise à jour', true); }
+}
+
+async function toggleCheck(id, field, el) {
+  const idx = allData.findIndex(r => r.id === id);
+  if (idx === -1) return;
+  const newVal = !allData[idx][field];
+  allData[idx][field] = newVal;
+  el.classList.toggle('done', newVal);
+  updateStats();
+  try {
+    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ [field]: newVal })
+    });
+    toast(field.toUpperCase().replace('_',' ') + (newVal ? ' validé ✓' : ' retiré'));
+  } catch { toast('Erreur', true); }
+}
+
+async function saveNote(id) {
+  const val = document.getElementById('note-'+id).value;
+  const btn = document.getElementById('savebtn-'+id);
+  const idx = allData.findIndex(r => r.id === id);
+  if (idx !== -1) allData[idx].notes_internes = val;
+  try {
+    await sbFetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ notes_internes: val })
+    });
+    btn.textContent = 'Sauvegardé ✓';
+    btn.classList.add('saved');
+    setTimeout(() => { btn.textContent = 'Sauvegarder'; btn.classList.remove('saved'); }, 2000);
+  } catch { toast('Erreur de sauvegarde', true); }
+}
+
+let toastTimer;
+function toast(msg, isErr = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = isErr ? 'var(--red)' : 'var(--gray-900)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
